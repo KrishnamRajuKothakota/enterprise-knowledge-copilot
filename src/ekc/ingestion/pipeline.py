@@ -195,7 +195,7 @@ class DocumentIngestionPipeline:
                          access_roles: list[str] = None) -> IngestionResult:
         """Ingest all supported files in a directory."""
         total = IngestionResult()
-        supported = {".pdf", ".csv", ".pptx", ".html", ".docx"}
+        supported = {".pdf", ".csv", ".pptx", ".html", ".docx", ".md", ".markdown"}
 
         files = [
             os.path.join(directory, f)
