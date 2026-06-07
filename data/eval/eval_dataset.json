@@ -1,0 +1,490 @@
+[
+  {
+    "question": "How to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces."
+  },
+  {
+    "question": "What is the command to restart a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl rollout restart deployment/<name> to restart all pods in the deployment."
+  },
+  {
+    "question": "How do I inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress."
+  },
+  {
+    "question": "How to troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity."
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "How to stop a running Docker container in Kubernetes?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container."
+  },
+  {
+    "question": "How to view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container."
+  },
+  {
+    "question": "How do I scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment."
+  },
+  {
+    "question": "How to inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress."
+  },
+  {
+    "question": "How do I list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers."
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption."
+  },
+  {
+    "question": "How to inspect deployment rollout status in Kubernetes?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress."
+  },
+  {
+    "question": "What is the command to stop a running Docker container?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container."
+  },
+  {
+    "question": "How do I restart a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl rollout restart deployment/<name> to restart all pods in the deployment."
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption."
+  },
+  {
+    "question": "What is the command to expose a deployment as a service?",
+    "ground_truth": "Use kubectl expose deployment <name> --type=ClusterIP --port=<port>."
+  },
+  {
+    "question": "How do I troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity."
+  },
+  {
+    "question": "What is the command to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads."
+  },
+  {
+    "question": "How to check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster."
+  },
+  {
+    "question": "How to verify Helm releases?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments."
+  },
+  {
+    "question": "What is the command to debug DNS issues in Kubernetes?",
+    "ground_truth": "Check CoreDNS pod status and test DNS resolution using nslookup inside pods."
+  },
+  {
+    "question": "What is the command to restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container."
+  },
+  {
+    "question": "How to view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container."
+  },
+  {
+    "question": "How to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers."
+  },
+  {
+    "question": "How to verify Helm releases?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments."
+  },
+  {
+    "question": "What is the command to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers."
+  },
+  {
+    "question": "What is the command to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces."
+  },
+  {
+    "question": "How do I stop a running Docker container?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container."
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption."
+  },
+  {
+    "question": "How do I view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container."
+  },
+  {
+    "question": "What is the command to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads."
+  },
+  {
+    "question": "How do I scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment."
+  },
+  {
+    "question": "How to check ingress resources in Kubernetes?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster."
+  },
+  {
+    "question": "How to delete a failed pod in Kubernetes?",
+    "ground_truth": "Use kubectl delete pod <pod-name> to remove the pod and allow recreation."
+  },
+  {
+    "question": "What is the command to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces."
+  },
+  {
+    "question": "What is the command to check node status in Kubernetes?",
+    "ground_truth": "Use kubectl get nodes and kubectl describe node <node-name> to inspect node health."
+  },
+  {
+    "question": "How do I debug DNS issues in Kubernetes?",
+    "ground_truth": "Check CoreDNS pod status and test DNS resolution using nslookup inside pods."
+  },
+  {
+    "question": "What is the command to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption."
+  },
+  {
+    "question": "How do I restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container."
+  },
+  {
+    "question": "How do I list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers."
+  },
+  {
+    "question": "How to check node status in Kubernetes?",
+    "ground_truth": "Use kubectl get nodes and kubectl describe node <node-name> to inspect node health."
+  },
+  {
+    "question": "What is the command to verify Helm releases?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments."
+  },
+  {
+    "question": "How do I check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces."
+  },
+  {
+    "question": "What is the command to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "How to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads."
+  },
+  {
+    "question": "How to inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress."
+  },
+  {
+    "question": "How to expose a deployment as a service in Kubernetes?",
+    "ground_truth": "Use kubectl expose deployment <name> --type=ClusterIP --port=<port>."
+  },
+  {
+    "question": "How to delete a failed pod?",
+    "ground_truth": "Use kubectl delete pod <pod-name> to remove the pod and allow recreation."
+  },
+  {
+    "question": "What is the command to resolve Pending pods?",
+    "ground_truth": "Check resource availability, PVC bindings, taints, tolerations, and scheduler events."
+  },
+  {
+    "question": "How to resolve Pending pods in Kubernetes?",
+    "ground_truth": "Check resource availability, PVC bindings, taints, tolerations, and scheduler events."
+  },
+  {
+    "question": "How to verify Helm releases in Kubernetes?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments."
+  },
+  {
+    "question": "What is the command to troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity."
+  },
+  {
+    "question": "How do I troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity."
+  },
+  {
+    "question": "What is the command to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable."
+  },
+  {
+    "question": "How to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable."
+  },
+  {
+    "question": "How to stop a running Docker container in Kubernetes?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container."
+  },
+  {
+    "question": "How do I debug DNS issues in Kubernetes?",
+    "ground_truth": "Check CoreDNS pod status and test DNS resolution using nslookup inside pods."
+  },
+  {
+    "question": "How to troubleshoot ImagePullBackOff in Kubernetes?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity."
+  },
+  {
+    "question": "How to scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment."
+  },
+  {
+    "question": "How do I check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster."
+  },
+  {
+    "question": "How do I check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces."
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "How to restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container."
+  },
+  {
+    "question": "How to verify Helm releases in Kubernetes?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments."
+  },
+  {
+    "question": "How to restart a Docker container in Kubernetes?",
+    "ground_truth": "Use docker restart <container-id> to restart the container."
+  },
+  {
+    "question": "What is the command to rebuild a Docker image without cache?",
+    "ground_truth": "Use docker build --no-cache -t <image-name> . to force a fresh build."
+  },
+  {
+    "question": "How to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers."
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "What is the command to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "What is the command to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads."
+  },
+  {
+    "question": "What is the command to check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster."
+  },
+  {
+    "question": "How do I rollback a Helm release?",
+    "ground_truth": "Use helm rollback <release-name> <revision-number> to restore a previous release."
+  },
+  {
+    "question": "How to inspect Docker container logs?",
+    "ground_truth": "Use docker logs <container-id> to view application logs."
+  },
+  {
+    "question": "What is the command to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable."
+  },
+  {
+    "question": "How do I rebuild a Docker image without cache?",
+    "ground_truth": "Use docker build --no-cache -t <image-name> . to force a fresh build."
+  },
+  {
+    "question": "How to rebuild a Docker image without cache?",
+    "ground_truth": "Use docker build --no-cache -t <image-name> . to force a fresh build."
+  },
+  {
+    "question": "What is the command to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces."
+  },
+  {
+    "question": "How do I check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces."
+  },
+  {
+    "question": "What is the command to troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity."
+  },
+  {
+    "question": "How do I drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads."
+  },
+  {
+    "question": "How to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers."
+  },
+  {
+    "question": "What is the command to restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container."
+  },
+  {
+    "question": "How to remove unused Docker images?",
+    "ground_truth": "Use docker image prune to clean up dangling and unused images."
+  },
+  {
+    "question": "What is the command to check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster."
+  },
+  {
+    "question": "How do I view Kubernetes events?",
+    "ground_truth": "Use kubectl get events --sort-by=.metadata.creationTimestamp to inspect recent cluster events."
+  },
+  {
+    "question": "How do I view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container."
+  },
+  {
+    "question": "How to stop a running Docker container?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container."
+  },
+  {
+    "question": "How to scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment."
+  },
+  {
+    "question": "How do I scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment."
+  },
+  {
+    "question": "How to troubleshoot ImagePullBackOff in Kubernetes?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity."
+  },
+  {
+    "question": "How do I list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers."
+  },
+  {
+    "question": "How to delete a failed pod in Kubernetes?",
+    "ground_truth": "Use kubectl delete pod <pod-name> to remove the pod and allow recreation."
+  },
+  {
+    "question": "How do I resolve Pending pods?",
+    "ground_truth": "Check resource availability, PVC bindings, taints, tolerations, and scheduler events."
+  },
+  {
+    "question": "What is the command to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption."
+  },
+  {
+    "question": "What is the command to verify Helm releases?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments."
+  },
+  {
+    "question": "How to inspect Docker container logs in Kubernetes?",
+    "ground_truth": "Use docker logs <container-id> to view application logs."
+  },
+  {
+    "question": "How do I check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster."
+  },
+  {
+    "question": "How to inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress."
+  },
+  {
+    "question": "How to expose a deployment as a service?",
+    "ground_truth": "Use kubectl expose deployment <name> --type=ClusterIP --port=<port>."
+  },
+  {
+    "question": "How do I stop a running Docker container?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container."
+  },
+  {
+    "question": "How do I stop a running Docker container?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container."
+  },
+  {
+    "question": "How to restart a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl rollout restart deployment/<name> to restart all pods in the deployment."
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption."
+  },
+  {
+    "question": "How to inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress."
+  },
+  {
+    "question": "What is the command to view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container."
+  },
+  {
+    "question": "How do I scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment."
+  },
+  {
+    "question": "How to delete a failed pod in Kubernetes?",
+    "ground_truth": "Use kubectl delete pod <pod-name> to remove the pod and allow recreation."
+  },
+  {
+    "question": "How do I resolve Pending pods?",
+    "ground_truth": "Check resource availability, PVC bindings, taints, tolerations, and scheduler events."
+  },
+  {
+    "question": "How to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable."
+  },
+  {
+    "question": "How to inspect deployment rollout status in Kubernetes?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress."
+  },
+  {
+    "question": "How do I rollback a Helm release?",
+    "ground_truth": "Use helm rollback <release-name> <revision-number> to restore a previous release."
+  },
+  {
+    "question": "How to check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster."
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "How to debug DNS issues in Kubernetes?",
+    "ground_truth": "Check CoreDNS pod status and test DNS resolution using nslookup inside pods."
+  },
+  {
+    "question": "How to rollback a Helm release in Kubernetes?",
+    "ground_truth": "Use helm rollback <release-name> <revision-number> to restore a previous release."
+  },
+  {
+    "question": "How to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable."
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details."
+  },
+  {
+    "question": "How to view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container."
+  },
+  {
+    "question": "What is the command to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable."
+  },
+  {
+    "question": "How to rollback a Kubernetes deployment?",
+    "ground_truth": "Use kubectl rollout undo deployment/<name> to rollback the deployment to the previous ReplicaSet."
+  },
+  {
+    "question": "How do I check pods in CrashLoopBackOff state?",
+    "ground_truth": "Run kubectl get pods and kubectl describe pod <pod-name> to inspect restart reasons and events."
+  }
+]
