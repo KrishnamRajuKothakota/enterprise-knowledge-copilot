@@ -5,6 +5,8 @@ from src.ekc.core.config import settings
 
 from src.ekc.api.routes import health, auth, query
 
+from src.ekc.api.routes import health, auth, query, feedback, metrics, ingest
+
 
 app = FastAPI(
     title="Enterprise Knowledge Copilot",
@@ -27,6 +29,12 @@ app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
 
 # add after the existing include_router lines:
 app.include_router(query.router, prefix="/api/v1", tags=["Query"])
+
+
+app.include_router(query.router,    prefix="/api/v1", tags=["Query"])
+app.include_router(feedback.router, prefix="/api/v1", tags=["Feedback"])
+app.include_router(metrics.router,  prefix="/api/v1", tags=["Metrics"])
+app.include_router(ingest.router,   prefix="/api/v1", tags=["Ingest"])
 
 
 @app.on_event("startup")
