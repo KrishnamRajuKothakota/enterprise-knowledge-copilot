@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.ekc.api.routes import health, auth
 from src.ekc.core.config import settings
 
+from src.ekc.api.routes import health, auth, query
+
+
 app = FastAPI(
     title="Enterprise Knowledge Copilot",
     description="Multi-agent RAG system with triple-fusion retrieval",
@@ -21,6 +24,9 @@ app.add_middleware(
 
 app.include_router(health.router, tags=["System"])
 app.include_router(auth.router, prefix="/api/v1", tags=["Auth"])
+
+# add after the existing include_router lines:
+app.include_router(query.router, prefix="/api/v1", tags=["Query"])
 
 
 @app.on_event("startup")
