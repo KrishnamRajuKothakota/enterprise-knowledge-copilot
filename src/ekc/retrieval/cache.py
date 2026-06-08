@@ -56,6 +56,29 @@ class QueryCache:
             self._client.delete(self._key(query))
         except Exception:
             pass
+        
+    def get_response(self, query: str) -> dict | None:
+        """Cache full LLM response including answer, sources, confidence."""
+        try:
+            val = self._client.get(f"resp:{self._key(query)}")
+            if val:
+                logger.debug(f"Response cache HIT: '{query[:50]}'")
+                return json.loads(val)
+        except Exception as e:
+            logger.debug(f"Response cache get error: {e}")
+        return None
+
+    def set_response(self, query: str, response: dict):
+        """Cache full LLM response for 24 hours."""
+        try:
+            self._client.setex(
+                f"resp:{self._key(query)}",
+                CACHE_TTL,
+                json.dumps(response),
+            )
+            logger.debug(f"Response cache SET: '{query[:50]}'")
+        except Exception as e:
+            logger.debug(f"Response cache set error: {e}")
 
 
 # ── Module-level singleton ────────────────────────────────────────────────────

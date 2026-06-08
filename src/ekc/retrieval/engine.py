@@ -160,5 +160,35 @@ class HybridRetrievalEngine:
 
 # ── Module-level factory ──────────────────────────────────────────────────────
 
+# Add at the bottom of engine.py, replacing the existing get_engine function
+
+# Module-level singleton components — loaded once, reused across all requests
+_vector_retriever = None
+_keyword_retriever = None
+_reranker = None
+_cache = None
+_role_injector = None
+
+
+def _get_components():
+    global _vector_retriever, _keyword_retriever, _reranker, _cache, _role_injector
+    if _vector_retriever is None:
+        _vector_retriever = VectorRetriever()
+        _keyword_retriever = KeywordRetriever()
+        _reranker = get_reranker()
+        _cache = get_cache()
+        _role_injector = get_role_injector()
+    return _vector_retriever, _keyword_retriever, _reranker, _cache, _role_injector
+
+
 def get_engine(db: Session) -> HybridRetrievalEngine:
-    return HybridRetrievalEngine(db)
+    engine = HybridRetrievalEngine.__new__(HybridRetrievalEngine)
+    engine.db = db
+    v, k, r, c, ri = _get_components()
+    engine.vector = v
+    engine.keyword = k
+    engine.graph = GraphRetriever(db)   # DB-bound, must be per-request
+    engine.reranker = r
+    engine.cache = c
+    engine.role_injector = ri
+    return engine

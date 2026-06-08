@@ -42,3 +42,20 @@ async def startup():
     print(f"EKC starting — env={settings.app_env}, "
           f"ollama={settings.ollama_base_url}, "
           f"model={settings.ollama_model}")
+    # Warm up Ollama on startup
+    import httpx
+    try:
+        print("Warming up Ollama...")
+        httpx.post(
+            f"{settings.ollama_base_url}/api/chat",
+            json={
+                "model": settings.ollama_model,
+                "stream": False,
+                "options": {"num_predict": 5},
+                "messages": [{"role": "user", "content": "/no_think say ready"}],
+            },
+            timeout=60,
+        )
+        print("Ollama warmed up")
+    except Exception as e:
+        print(f"Ollama warmup failed: {e}")

@@ -1,10 +1,11 @@
 """
 Ollama HTTP client.
-- Non-thinking mode forced (/no_think prefix)
-- 30s timeout -> LLMTimeoutError -> FALLBACK
+- thinking disabled via API-level think:false + /no_think prefix (belt & suspenders)
+- empty response after think-stripping triggers fallback
+- 90s timeout -> LLMTimeoutError -> FALLBACK
 - temperature=0.1 for factual grounding
-- Streams tokens for perceived latency improvement
 """
+import re
 import logging
 import httpx
 from src.ekc.core.config import settings
@@ -14,12 +15,11 @@ logger = logging.getLogger(__name__)
 
 OLLAMA_CHAT_URL = f"{settings.ollama_base_url}/api/chat"
 
-# Qwen3 non-thinking mode sampling params (per Qwen team recommendation)
 GENERATION_PARAMS = {
-    "temperature": 0.1,      # low for factual grounding
+    "temperature": 0.1,
     "top_p": 0.8,
     "top_k": 20,
-    "repeat_penalty": 1.5,   # suppress repetition in quantised model
+    "repeat_penalty": 1.5,
 }
 
 
@@ -33,19 +33,15 @@ class OllamaClient:
         self,
         system_prompt: str,
         user_message: str,
-        max_tokens: int = 512,
+        max_tokens: int = 350,
     ) -> str:
-        """
-        Send a chat completion request to Ollama.
-        Forces /no_think prefix to disable Qwen3 thinking mode.
-        Returns the response text or raises LLMTimeoutError.
-        """
-        # Force non-thinking mode — critical for latency on P4000
+        # Belt-and-suspenders: API param + prompt prefix
         user_message_with_nothink = f"/no_think\n{user_message}"
 
         payload = {
             "model": self.model,
             "stream": False,
+            "think": False,           # Ollama API-level thinking disable for Qwen3
             "options": {
                 **GENERATION_PARAMS,
                 "num_predict": max_tokens,
@@ -62,12 +58,19 @@ class OllamaClient:
                 response.raise_for_status()
 
             data = response.json()
-            content = data.get("message", {}).get("content", "").strip()
+            raw_content = data.get("message", {}).get("content", "").strip()
+            logger.debug(f"LLM raw response length: {len(raw_content)} chars")
 
-            # Strip any residual <think> blocks Qwen3 might emit
-            content = _strip_think_blocks(content)
+            content = _strip_think_blocks(raw_content)
 
-            logger.debug(f"LLM response: {len(content)} chars")
+            if not content.strip():
+                logger.warning(
+                    "LLM returned empty response after stripping think blocks "
+                    f"(raw length={len(raw_content)}). Triggering fallback."
+                )
+                raise LLMTimeoutError("LLM returned empty response")
+
+            logger.debug(f"LLM final response: {len(content)} chars")
             return content
 
         except httpx.TimeoutException:
@@ -76,14 +79,18 @@ class OllamaClient:
 
         except httpx.ConnectError as e:
             logger.error(f"Ollama unreachable: {e}")
-            raise LLMUnavailableError(f"Cannot connect to Ollama at {settings.ollama_base_url}")
+            raise LLMUnavailableError(
+                f"Cannot connect to Ollama at {settings.ollama_base_url}"
+            )
+
+        except (LLMTimeoutError, LLMUnavailableError):
+            raise
 
         except Exception as e:
             logger.error(f"Ollama error: {e}")
             raise LLMUnavailableError(str(e))
 
     def health_check(self) -> bool:
-        """Returns True if Ollama is reachable and the model is loaded."""
         try:
             with httpx.Client(timeout=5) as client:
                 r = client.get(f"{settings.ollama_base_url}/api/tags")
@@ -94,13 +101,26 @@ class OllamaClient:
 
 
 def _strip_think_blocks(text: str) -> str:
-    """Remove <think>...</think> blocks from Qwen3 output."""
-    import re
-    text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
-    return text.strip()
+    """
+    Remove Qwen3 <think>...</think> blocks.
+    If the entire response is a think block, return everything after
+    the last </think> tag. If nothing follows, strip blocks and return
+    whatever remains (may be empty — caller handles that case).
+    """
+    if "</think>" not in text:
+        # No think blocks — return as-is
+        return text.strip()
 
+    # Return everything after the last </think>
+    last_end = text.rfind("</think>")
+    after = text[last_end + len("</think>"):].strip()
+    if after:
+        return after
 
-# ── Module-level singleton ────────────────────────────────────────────────────
+    # Nothing after </think> — strip all blocks and return remainder
+    stripped = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    return stripped
+
 
 _client = None
 

@@ -9,13 +9,31 @@ from src.ekc.llm.guard import get_guard
 from src.ekc.llm.formatter import get_formatter
 from src.ekc.core.exceptions import LLMTimeoutError, LLMUnavailableError
 from src.ekc.db.session import SessionLocal
-
+ 
 logger = logging.getLogger(__name__)
-
 MAX_RETRIES = 2
-
-
+ 
+ 
 def document_search_node(state: AgentState) -> AgentState:
+    from src.ekc.retrieval.cache import get_cache
+
+    # Check response-level cache first — skips retrieval AND LLM entirely
+    cache = get_cache()
+    cached_response = cache.get_response(state["query"])
+    if cached_response:
+        logger.info(f"Response cache hit for: {state['query'][:50]}")
+        return {
+            **state,
+            "chunks": [],
+            "raw_response": cached_response["answer"],
+            "cited_response": cached_response["answer"],
+            "sources": cached_response["sources"],
+            "confidence_score": cached_response["confidence_score"],
+            "follow_up_suggestions": cached_response["follow_up_suggestions"],
+            "cache_hit": True,
+            "fallback": False,
+        }
+
     db = SessionLocal()
     try:
         engine = get_engine(db)
@@ -23,14 +41,14 @@ def document_search_node(state: AgentState) -> AgentState:
         enforcer = CitationEnforcer()
         guard = get_guard()
         formatter = get_formatter()
-
+ 
         # Retrieve
         chunks, cache_hit = engine.hybrid_search(
             state["query"],
             user_role=state["user_role"],
             top_k=5,
         )
-
+ 
         if not chunks:
             return {
                 **state,
@@ -43,20 +61,19 @@ def document_search_node(state: AgentState) -> AgentState:
                 "follow_up_suggestions": [],
                 "cache_hit": False,
             }
-
+ 
         # Build prompt and generate
         system_prompt, user_message = build_prompt(
             state["query"], chunks, state["user_role"]
         )
-
-        iteration = state.get("iteration_count", 0)
+ 
         raw_response = ""
         fallback = False
-
+ 
         for attempt in range(MAX_RETRIES + 1):
             try:
                 raw_response = llm.generate(
-                    system_prompt, user_message, max_tokens=400
+                    system_prompt, user_message, max_tokens=350
                 )
                 is_grounded, conf = guard.check(raw_response, chunks)
                 if is_grounded or attempt == MAX_RETRIES:
@@ -70,15 +87,38 @@ def document_search_node(state: AgentState) -> AgentState:
                 fallback = True
                 raw_response = _build_fallback(chunks)
                 break
-
-        cited_response, sources = enforcer.enforce(raw_response, chunks)
+ 
+        # Skip CitationEnforcer for fallback — raw excerpts are the answer
+        if fallback:
+            cited_response = raw_response
+            sources = [
+                {
+                    "chunk_id": c.chunk_id,
+                    "doc_title": c.doc_title,
+                    "section_title": c.section_title,
+                    "page_number": c.page_number,
+                    "namespace": c.namespace,
+                }
+                for c in chunks[:3]
+            ]
+        else:
+            cited_response, sources = enforcer.enforce(raw_response, chunks)
+ 
         result = formatter.format(
             cited_response, sources, chunks,
             session_id=state["session_id"],
             cache_hit=cache_hit,
             fallback=fallback,
         )
-
+        # Cache the full response for instant repeat queries
+        if not fallback and result.answer:
+            cache.set_response(state["query"], {
+                "answer": result.answer,
+                "sources": result.sources,
+                "confidence_score": result.confidence_score,
+                "follow_up_suggestions": result.follow_up_suggestions,
+            })
+ 
         return {
             **state,
             "chunks": chunks,
@@ -92,8 +132,8 @@ def document_search_node(state: AgentState) -> AgentState:
         }
     finally:
         db.close()
-
-
+ 
+ 
 def _build_fallback(chunks) -> str:
     """Return raw snippets when LLM is unavailable."""
     parts = ["⚠️ LLM unavailable. Here are the most relevant excerpts:\n"]

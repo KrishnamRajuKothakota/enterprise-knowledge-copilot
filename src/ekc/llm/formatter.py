@@ -39,13 +39,17 @@ class ResponseFormatter:
         # Generate follow-up suggestions based on top chunk content
         follow_ups = self._suggest_follow_ups(chunks)
 
-        # Clean up [SOURCE: ...] tags from the displayed answer
-        clean_answer = re.sub(
-            r'\s*\[SOURCE:\s*[a-f0-9\-]+\]',
-            '',
-            answer,
-            flags=re.IGNORECASE,
-        ).strip()
+        # Don't strip citation tags from fallback responses — they're the whole content
+        if fallback:
+            clean_answer = answer
+        else:
+            clean_answer = re.sub(
+                r'\s*\[SOURCE:\s*[^\]]+\]',
+                '',
+                answer,
+                flags=re.IGNORECASE,
+            ).strip()
+            clean_answer = re.sub(r'\[\s*\]', '', clean_answer).strip()
 
         return FormattedResponse(
             answer=clean_answer,

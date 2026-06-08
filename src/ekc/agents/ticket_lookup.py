@@ -11,6 +11,21 @@ logger = logging.getLogger(__name__)
 
 
 def ticket_lookup_node(state: AgentState) -> AgentState:
+    from src.ekc.retrieval.cache import get_cache
+    cache = get_cache()
+    cached_response = cache.get_response(state["query"])
+    if cached_response:
+        return {
+            **state,
+            "chunks": [],
+            "raw_response": cached_response["answer"],
+            "cited_response": cached_response["answer"],
+            "sources": cached_response["sources"],
+            "confidence_score": cached_response["confidence_score"],
+            "follow_up_suggestions": cached_response["follow_up_suggestions"],
+            "cache_hit": True,
+            "fallback": False,
+        }
     db = SessionLocal()
     try:
         engine = get_engine(db)
@@ -68,6 +83,14 @@ Summarise the resolution approach from these tickets."""
             cited, sources, ticket_chunks,
             session_id=state["session_id"],
         )
+
+        if result.answer:
+            cache.set_response(state["query"], {
+                "answer": result.answer,
+                "sources": result.sources,
+                "confidence_score": result.confidence_score,
+                "follow_up_suggestions": result.follow_up_suggestions,
+            })
 
         return {
             **state,

@@ -58,7 +58,7 @@ def build_prompt(
             f"[chunk_id: {chunk.chunk_id[:8]}] "
             f"[source: {chunk.doc_title[:50]}] "
             f"[section: {chunk.section_title[:50]}]\n"
-            f"{chunk.content[:600]}"
+            f"{chunk.content[:300]}"   # was 400
         )
 
     context_block = "\n\n---\n\n".join(context_parts)

@@ -188,6 +188,16 @@ class DocumentIngestionPipeline:
             logger.exception(f"Pipeline failed for {file_path}")
         finally:
             db.close()
+        # Invalidate Redis cache after ingestion — chunk IDs changed
+        try:
+            import redis as redis_client
+            r = redis_client.from_url(settings.redis_url, socket_connect_timeout=2)
+            keys = r.keys("ekc:query:*")
+            if keys:
+                r.delete(*keys)
+                logger.info(f"Cache invalidated: {len(keys)} entries cleared")
+        except Exception:
+            pass  # Cache invalidation is best-effort
 
         return result
 
