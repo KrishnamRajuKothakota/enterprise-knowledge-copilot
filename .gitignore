@@ -31,3 +31,6 @@ logs/
 # IDE
 .vscode/
 .idea/
+__pycache__/
+*.pyc
+*.pyo
