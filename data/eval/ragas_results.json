@@ -1,10 +1,10 @@
 {
-  "run_date": "2026-06-09T11:33:43.159521",
+  "run_date": "2026-06-09T13:43:57.449530",
   "sample_size": 15,
-  "faithfulness": 0.894074074074074,
-  "context_precision": 0.6466666666283333,
-  "answer_relevancy": 0.7915625360884103,
-  "context_recall": 0.6044444444444443,
+  "faithfulness": 0.7384106634106634,
+  "context_precision": 0.6577777777355556,
+  "answer_relevancy": 0.798642004456113,
+  "context_recall": 0.6333333333333333,
   "targets": {
     "faithfulness": 0.88,
     "context_precision": 0.85,
