@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-06-10T05:44:31.364187",
+  "signals": {
+    "sop_procedure": {
+      "avg_score": 0.75,
+      "n": 11,
+      "suggested_bm25_weight": 0.5,
+      "suggested_vector_weight": 0.5
+    },
+    "ticket_lookup": {
+      "avg_score": 0.6,
+      "n": 1,
+      "suggested_bm25_weight": 0.5,
+      "suggested_vector_weight": 0.5
+    },
+    "other": {
+      "avg_score": 0.725,
+      "n": 4,
+      "suggested_bm25_weight": 0.5,
+      "suggested_vector_weight": 0.5
+    }
+  }
+}

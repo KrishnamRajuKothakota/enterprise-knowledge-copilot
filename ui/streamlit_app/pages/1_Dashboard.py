@@ -87,6 +87,57 @@ col3.metric("Approval Rate",
             f"{thumbs_up/total_fb*100:.0f}%" if total_fb > 0 else "N/A")
 
 st.markdown("---")
+st.subheader("🤖 LLM-as-Judge Scores (Latest Batch)")
+
+try:
+    from src.ekc.db.models import Feedback, QueryLog
+    from src.ekc.db.session import SessionLocal
+    db_local = SessionLocal()
+    scored = db_local.query(Feedback, QueryLog).join(
+        QueryLog, Feedback.query_id == QueryLog.query_id
+    ).filter(
+        Feedback.llm_judge_score.isnot(None)
+    ).order_by(Feedback.created_at.desc()).limit(10).all()
+
+    if scored:
+        avg_judge = sum(f.llm_judge_score for f, _ in scored) / len(scored)
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Avg Judge Score", f"{avg_judge:.3f}")
+        col2.metric("Entries Scored", len(scored))
+        col3.metric("Target", "> 0.70")
+
+        import pandas as pd
+        rows = []
+        for fb, ql in scored:
+            rows.append({
+                "Query": ql.query_text[:50] + "...",
+                "User Rating": "👍" if fb.rating.value == "up" else "👎",
+                "Judge Score": f"{fb.llm_judge_score:.3f}",
+            })
+        st.dataframe(pd.DataFrame(rows), use_container_width=True)
+    else:
+        st.info("No scored feedback yet. Run: python scripts/llm_judge_batch.py")
+    db_local.close()
+except Exception as e:
+    st.error(f"Could not load judge scores: {e}")
+
+# Weight rebalancing signals
+import json, os
+signals_path = "data/eval/weight_signals.json"
+if os.path.exists(signals_path):
+    st.markdown("---")
+    st.subheader("⚖️ Retrieval Weight Signals")
+    with open(signals_path) as f:
+        signals_data = json.load(f)
+    st.caption(f"Generated: {signals_data.get('generated_at', 'unknown')[:19]}")
+    for cat, data in signals_data.get('signals', {}).items():
+        col1, col2, col3 = st.columns(3)
+        col1.metric(cat.replace('_', ' ').title(),
+                   f"avg {data['avg_score']:.3f}", f"n={data['n']}")
+        col2.metric("BM25 weight", data['suggested_bm25_weight'])
+        col3.metric("Vector weight", data['suggested_vector_weight'])
+        
+st.markdown("---")
 
 # Corpus stats
 st.subheader("📚 Knowledge Corpus")
