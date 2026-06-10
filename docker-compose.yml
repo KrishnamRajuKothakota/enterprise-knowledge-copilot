@@ -83,6 +83,82 @@ services:
       api:
         condition: service_healthy
 
+  celery_ingestion:
+    build: .
+    container_name: ekc_celery_ingestion
+    restart: unless-stopped
+    command: celery -A src.ekc.celery_app worker --loglevel=info --queues=ingestion --concurrency=2
+    environment:
+      - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b-nothink}
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_evaluation:
+    build: .
+    container_name: ekc_celery_evaluation
+    restart: unless-stopped
+    command: celery -A src.ekc.celery_app worker --loglevel=info --queues=evaluation --concurrency=1
+    environment:
+      - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b-nothink}
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_ingestion:
+    build: .
+    container_name: ekc_celery_ingestion
+    restart: unless-stopped
+    command: celery -A src.ekc.celery_app worker --loglevel=info --queues=ingestion --concurrency=2
+    environment:
+      - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b-nothink}
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_evaluation:
+    build: .
+    container_name: ekc_celery_evaluation
+    restart: unless-stopped
+    command: celery -A src.ekc.celery_app worker --loglevel=info --queues=evaluation --concurrency=1
+    environment:
+      - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b-nothink}
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   redis_data:
