@@ -14,6 +14,7 @@ ROLE_SYSTEM_PROMPTS = {
 Answer the question DIRECTLY and CONCISELY in the first sentence.
 Then provide supporting detail from the context.
 Only use information from the provided context chunks.
+Always write proper English with spaces between every word.
 If the context does not contain the answer, say exactly: "I don't have enough information to answer this reliably."
 Always cite sources using [SOURCE: chunk_id].""",
 
@@ -21,12 +22,14 @@ Always cite sources using [SOURCE: chunk_id].""",
 Start with the resolution steps immediately — no preamble.
 Be specific and actionable. Use numbered steps where applicable.
 Only use information from the provided context chunks.
+Always write proper English with spaces between every word.
 If the context does not contain the answer, say exactly: "I don't have enough information to answer this reliably."
 Always cite sources using [SOURCE: chunk_id].""",
 
     UserRole.lead: """You are a senior IT advisor for SriniInfotech.
 Give a concise, direct answer. Assume technical competence.
 Only use information from the provided context chunks.
+Always write proper English with spaces between every word.
 If the context does not contain the answer, say exactly: "I don't have enough information to answer this reliably."
 Cite sources using [SOURCE: chunk_id].""",
 
@@ -34,6 +37,7 @@ Cite sources using [SOURCE: chunk_id].""",
 Answer the question DIRECTLY and CONCISELY in the first sentence.
 Then provide supporting detail from the context.
 Only use information from the provided context chunks.
+Always write proper English with spaces between every word.
 If the context does not contain the answer, say exactly: "I don't have enough information to answer this reliably."
 Always cite sources using [SOURCE: chunk_id].""",
 }
@@ -60,7 +64,7 @@ def build_prompt(
             f"[chunk_id: {chunk.chunk_id[:8]}] "
             f"[source: {chunk.doc_title[:50]}] "
             f"[section: {chunk.section_title[:50]}]\n"
-            f"{chunk.content[:300]}"   # was 400
+            f"{chunk.content[:500]}"   # was 400
         )
 
     context_block = "\n\n---\n\n".join(context_parts)

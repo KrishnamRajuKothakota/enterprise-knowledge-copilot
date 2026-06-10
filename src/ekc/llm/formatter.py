@@ -39,17 +39,41 @@ class ResponseFormatter:
         # Generate follow-up suggestions based on top chunk content
         follow_ups = self._suggest_follow_ups(chunks)
 
+        # Fix missing spaces between words (LLM tokenization artifact)
+        import re as _re2
+        # camelCase: lowercase->uppercase
+        answer = _re2.sub(r'([a-z])([A-Z])', r'\1 \2', answer)
+        # ALLCAPS->lowercase: e.g. VPNissue -> VPN issue
+        answer = _re2.sub(r'([A-Z]{2,})([a-z])', r'\1 \2', answer)
+        # lowercase->digit or digit->lowercase
+        answer = _re2.sub(r'([a-z])([0-9])', r'\1 \2', answer)
+        answer = _re2.sub(r'([0-9])([a-z])', r'\1 \2', answer)
+        # Fix common concatenations: word ending + common prepositions/articles
+        for pair in [('the','The'),('to','To'),('with','With'),('by','By'),
+                     ('and','And'),('in','In'),('of','Of'),('a','A'),('an','An')]:
+            answer = _re2.sub(r'([a-z])(' + pair[0] + r')([A-Z\s])', r'\1 \2\3', answer)
+        # Add space after punctuation if missing
+        answer = _re2.sub(r'([.,;:])([A-Za-z])', r'\1 \2', answer)
+
+        # Replace PII redaction tokens with readable text
+        import re as _re
+        answer = _re.sub(r'\[PERSON_?\d*\]', 'the responsible person', answer)
+        answer = _re.sub(r'\[EMAIL_?\d*\]', '[redacted email]', answer)
+        answer = _re.sub(r'\[PHONE_?\d*\]', '[redacted phone]', answer)
+        answer = _re.sub(r'\[AADHAAR_?\d*\]', '[redacted ID]', answer)
+        answer = _re.sub(r'\[PAN_?\d*\]', '[redacted PAN]', answer)
+
         # Don't strip citation tags from fallback responses — they're the whole content
         if fallback:
             clean_answer = answer
         else:
-            clean_answer = re.sub(
-                r'\s*\[SOURCE:\s*[^\]]+\]',
-                '',
-                answer,
-                flags=re.IGNORECASE,
-            ).strip()
-            clean_answer = re.sub(r'\[\s*\]', '', clean_answer).strip()
+            # Remove [SOURCE: ...] tags in all formats
+            clean_answer = re.sub(r'\[\s*SOURCE:[^\]]*\]', '', answer, flags=re.IGNORECASE)
+            clean_answer = re.sub(r'\[SOURCE:[^\]]*\]', '', clean_answer, flags=re.IGNORECASE)
+            # Remove orphan brackets
+            clean_answer = re.sub(r'\s*\]\s*', ' ', clean_answer)
+            clean_answer = re.sub(r'\s*\[\s*', ' ', clean_answer)
+            clean_answer = re.sub(r'\s+', ' ', clean_answer).strip()
 
         return FormattedResponse(
             answer=clean_answer,

@@ -73,7 +73,7 @@ def document_search_node(state: AgentState) -> AgentState:
         for attempt in range(MAX_RETRIES + 1):
             try:
                 raw_response = llm.generate(
-                    system_prompt, user_message, max_tokens=350
+                    system_prompt, user_message, max_tokens=500
                 )
                 is_grounded, conf = guard.check(raw_response, chunks)
                 if is_grounded or attempt == MAX_RETRIES:
@@ -111,9 +111,17 @@ def document_search_node(state: AgentState) -> AgentState:
             fallback=fallback,
         )
         # Cache the full response for instant repeat queries
-        if not fallback and result.answer:
+        # Apply space fix before caching so cached responses are also clean
+        import re as _space_re
+        clean_cached_answer = result.answer
+        clean_cached_answer = _space_re.sub(r'([a-z])([A-Z])', r'\1 \2', clean_cached_answer)
+        clean_cached_answer = _space_re.sub(r'([A-Z]{2,})([a-z])', r'\1 \2', clean_cached_answer)
+        clean_cached_answer = _space_re.sub(r'([.,;:])([A-Za-z])', r'\1 \2', clean_cached_answer)
+        for pair in ['the','to','with','by','and','in','of']:
+            clean_cached_answer = _space_re.sub(r'([a-z])(' + pair + r')([A-Z\s])', r'\1 \2\3', clean_cached_answer)
+        if not fallback and clean_cached_answer:
             cache.set_response(state["query"], {
-                "answer": result.answer,
+                "answer": clean_cached_answer,
                 "sources": result.sources,
                 "confidence_score": result.confidence_score,
                 "follow_up_suggestions": result.follow_up_suggestions,
