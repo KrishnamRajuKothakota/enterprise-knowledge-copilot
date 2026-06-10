@@ -28,6 +28,12 @@ INTENT_PATTERNS = {
         r'\b(find|search|look\s+up|retrieve)\b',
         r'\b(escalat|onboard|provision|deploy|rollback|backup|patch)\b',
     ],
+    "auto_resolve": [
+        r'\b(auto.?resolv|resolve\s+ticket|fix\s+ticket)\b',
+        r'\bTicket\s+ID\s*:\s*\w+',
+        r'\b(JRA|INC)-\d+\b',
+        r'\b(how\s+to\s+fix|troubleshoot|resolve)\s+(this|the)\s+(ticket|issue|error)\b',
+    ],
 }
 
 
