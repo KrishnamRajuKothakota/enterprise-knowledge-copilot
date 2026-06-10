@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+venv/
+*.pyc
+
+# Environment — never commit secrets
+.env
+
+# Data — too large for git
+data/raw/
+data/backups/
+data/indexes/faiss.index
+data/indexes/bm25.pkl
+data/indexes/graph.graphml
+
+# Keep eval results
+!data/eval/
+!data/eval/*.json
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+*.swp
+
+# IDE
+.vscode/
+.idea/
