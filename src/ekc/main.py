@@ -5,7 +5,7 @@ from src.ekc.core.config import settings
 
 from src.ekc.api.routes import health, auth, query
 
-from src.ekc.api.routes import health, auth, query, feedback, metrics, ingest
+from src.ekc.api.routes import health, auth, query, feedback, metrics, ingest, prometheus
 
 
 app = FastAPI(
@@ -35,6 +35,8 @@ app.include_router(query.router,    prefix="/api/v1", tags=["Query"])
 app.include_router(feedback.router, prefix="/api/v1", tags=["Feedback"])
 app.include_router(metrics.router,  prefix="/api/v1", tags=["Metrics"])
 app.include_router(ingest.router,   prefix="/api/v1", tags=["Ingest"])
+
+app.include_router(prometheus.router, tags=["Observability"])
 
 
 @app.on_event("startup")
