@@ -10,5 +10,11 @@
     "context_precision": 0.85,
     "answer_relevancy": 0.85,
     "context_recall": 0.8
+  },
+  "unanswerable_detection": {
+    "rate": 0.909,
+    "n": 22,
+    "target": 0.85,
+    "meets_target": true
   }
 }

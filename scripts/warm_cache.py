@@ -16,6 +16,8 @@ token = r.json()["access_token"]
 headers = {"Authorization": f"Bearer {token}"}
 
 DEMO_QUERIES = [
+    "Resolve ticket JRA-1001: auth-service CrashLoopBackOff after deployment",
+    "Auto-resolve: Pod ImagePullBackOff in production namespace",
     "What is the SLA for P1 incident resolution?",
     "How do I escalate a VPN issue to L2?",
     "Find K8s rollback procedure",

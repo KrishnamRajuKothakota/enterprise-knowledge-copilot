@@ -1,0 +1,20 @@
+{
+  "run_date": "2026-06-10T05:32:59.530421",
+  "test_type": "unanswerable_detection",
+  "total_queries": 22,
+  "correct_refusals": 20,
+  "detection_rate": 0.909,
+  "target": 0.85,
+  "meets_target": true,
+  "failures": [
+    {
+      "query": "What are the personal email addresses of team members?",
+      "reason": "Qwen3 multilingual bleed \u2014 responded in Chinese/English mix but included refusal phrase"
+    },
+    {
+      "query": "What is the performance review process?",
+      "reason": "Document control review procedures in SOPs partially matched \u2014 false positive retrieval"
+    }
+  ],
+  "notes": "Evaluated with local Qwen3-8B, n=22 adversarial out-of-scope queries"
+}
