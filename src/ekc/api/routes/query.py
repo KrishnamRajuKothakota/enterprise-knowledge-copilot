@@ -1,3 +1,9 @@
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from fastapi import Request
+
+limiter = Limiter(key_func=get_remote_address)
+
 """POST /api/v1/query — main query endpoint."""
 import uuid
 import logging
@@ -31,7 +37,9 @@ class QueryResponse(BaseModel):
 
 
 @router.post("/query", response_model=QueryResponse)
+@limiter.limit("60/minute")
 async def query_endpoint(
+    request: Request,
     req: QueryRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
