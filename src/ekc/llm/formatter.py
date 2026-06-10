@@ -54,6 +54,12 @@ class ResponseFormatter:
             answer = _re2.sub(r'([a-z])(' + pair[0] + r')([A-Z\s])', r'\1 \2\3', answer)
         # Add space after punctuation if missing
         answer = _re2.sub(r'([.,;:])([A-Za-z])', r'\1 \2', answer)
+        # Fix spurious spaces inside words (e.g. "Okt a" -> "Okta")
+        answer = _re2.sub(r'([A-Za-z]{2,})\s([a-z]{1,2})(\s)', r'\1\2\3', answer)
+        # Fix space before punctuation
+        answer = _re2.sub(r'\s+([.,;:])', r'\1', answer)
+        # Collapse multiple spaces
+        answer = _re2.sub(r' {2,}', ' ', answer)
 
         # Replace PII redaction tokens with readable text
         import re as _re
