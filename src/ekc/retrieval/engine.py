@@ -26,6 +26,50 @@ from src.ekc.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+import json as _json
+import os as _os
+
+def _load_weight_signals() -> dict:
+    """Load BM25/vector weight signals from feedback analysis."""
+    signals_path = "data/eval/weight_signals.json"
+    try:
+        if _os.path.exists(signals_path):
+            with open(signals_path) as f:
+                data = _json.load(f)
+            return data.get("signals", {})
+    except Exception:
+        pass
+    return {}
+
+def _get_query_weights(query: str) -> tuple[float, float]:
+    """
+    Return (bm25_weight, vector_weight) for this query
+    based on feedback-driven rebalancing signals.
+    Default: 0.5 / 0.5 balanced.
+    """
+    signals = _load_weight_signals()
+    if not signals:
+        return 0.5, 0.5
+
+    q = query.lower()
+    if any(w in q for w in ["sop", "procedure", "escalat", "sla", "onboard", "leaver"]):
+        cat = "sop_procedure"
+    elif any(w in q for w in ["ticket", "jira", "inc-", "jra-", "resolve"]):
+        cat = "ticket_lookup"
+    elif any(w in q for w in ["kubernetes", "kubectl", "docker", "k8s", "pod"]):
+        cat = "k8s_docker"
+    else:
+        cat = "other"
+
+    if cat in signals:
+        bm25_w = signals[cat].get("suggested_bm25_weight", 0.5)
+        vector_w = signals[cat].get("suggested_vector_weight", 0.5)
+        return bm25_w, vector_w
+
+    return 0.5, 0.5
+
+
+
 
 @dataclass
 class RetrievedChunk:
@@ -85,9 +129,13 @@ class HybridRetrievalEngine:
         )
 
         # 5. Reciprocal Rank Fusion -> top-15 candidates
+        # Use feedback-driven weights if available
+        bm25_w, vector_w = _get_query_weights(query)
+        logger.debug(f"Query weights: vector={vector_w:.2f} bm25={bm25_w:.2f}")
         fused = reciprocal_rank_fusion(
             [vector_results, keyword_results, graph_results],
             top_k=settings.rerank_top_n,
+            weights=[vector_w, bm25_w, 0.5],
         )
 
         if not fused:
