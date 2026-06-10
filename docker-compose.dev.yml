@@ -1,0 +1,21 @@
+# Development override — use this for local development
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+version: "3.9"
+
+services:
+  # Only run infrastructure in Docker during development
+  # Run API and UI directly with uvicorn/streamlit in your venv
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  # Override api and ui to not start in dev mode
+  api:
+    profiles: ["prod"]
+
+  ui:
+    profiles: ["prod"]

@@ -33,6 +33,56 @@ services:
       timeout: 5s
       retries: 5
 
+  api:
+    build: .
+    container_name: ekc_api
+    restart: unless-stopped
+    command: uvicorn src.ekc.main:app --host 0.0.0.0 --port 8000 --workers 1
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b}
+      - OLLAMA_TIMEOUT=${OLLAMA_TIMEOUT:-90}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-me-in-production}
+      - APP_ENV=${APP_ENV:-production}
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  ui:
+    build: .
+    container_name: ekc_ui
+    restart: unless-stopped
+    command: streamlit run ui/streamlit_app/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    ports:
+      - "8501:8501"
+    environment:
+      - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b}
+    volumes:
+      - ./data:/app/data
+      - ./src:/app/src
+      - ./ui:/app/ui
+    depends_on:
+      api:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   redis_data:
