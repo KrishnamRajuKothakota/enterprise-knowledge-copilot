@@ -92,6 +92,9 @@ def query_api(query: str) -> dict | None:
         payload = {"query": query}
         if st.session_state.session_id:
             payload["session_id"] = st.session_state.session_id
+        # Send current role for role-adaptive responses
+        if st.session_state.get("user_role"):
+            payload["role"] = st.session_state.user_role
         r = httpx.post(f"{API_BASE}/query", json=payload,
                        headers=auth_headers(), timeout=120)
         if r.status_code == 200:
@@ -171,6 +174,10 @@ with st.sidebar:
         ) if st.session_state.user_role in
             ["admin", "junior_engineer", "l1_support", "lead"] else 0,
     )
+    if demo_role != st.session_state.user_role:
+        st.session_state.user_role = demo_role
+        st.success(f"Role switched to: {demo_role}")
+        st.rerun()
 
     st.markdown("---")
     st.markdown("**📊 Quick Metrics**")

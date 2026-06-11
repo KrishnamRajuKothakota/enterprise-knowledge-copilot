@@ -19,10 +19,19 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+def _resolve_role(requested_role, jwt_role):
+    """Use requested role if valid, else fall back to JWT role."""
+    from src.ekc.db.models import UserRole
+    valid = {r.value for r in UserRole}
+    if requested_role and requested_role in valid:
+        return UserRole(requested_role)
+    return jwt_role
+
 
 class QueryRequest(BaseModel):
     query: str
     session_id: str | None = None
+    role: str | None = None  # Optional role override for demo
 
 
 class QueryResponse(BaseModel):
@@ -67,7 +76,7 @@ async def query_endpoint(
         "query": req.query,
         "session_id": session_id,
         "user_id": current_user.user_id,
-        "user_role": current_user.role,
+        "user_role": _resolve_role(req.role, current_user.role),
         "intent": "",
         "chunks": [],
         "raw_response": "",

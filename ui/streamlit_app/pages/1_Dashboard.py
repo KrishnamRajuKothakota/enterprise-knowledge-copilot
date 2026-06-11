@@ -90,34 +90,30 @@ st.markdown("---")
 st.subheader("🤖 LLM-as-Judge Scores (Latest Batch)")
 
 try:
-    from src.ekc.db.models import Feedback, QueryLog
-    from src.ekc.db.session import SessionLocal
-    db_local = SessionLocal()
-    scored = db_local.query(Feedback, QueryLog).join(
-        QueryLog, Feedback.query_id == QueryLog.query_id
-    ).filter(
-        Feedback.llm_judge_score.isnot(None)
-    ).order_by(Feedback.created_at.desc()).limit(10).all()
+    # Use metrics API instead of direct DB access
+    judge_data = m.get("llm_judge", {})
+    avg_judge = judge_data.get("avg_score", 0)
+    scored_count = judge_data.get("scored_count", 0)
 
-    if scored:
-        avg_judge = sum(f.llm_judge_score for f, _ in scored) / len(scored)
+    if scored_count > 0:
         col1, col2, col3 = st.columns(3)
         col1.metric("Avg Judge Score", f"{avg_judge:.3f}")
-        col2.metric("Entries Scored", len(scored))
+        col2.metric("Entries Scored", scored_count)
         col3.metric("Target", "> 0.70")
 
-        import pandas as pd
-        rows = []
-        for fb, ql in scored:
-            rows.append({
-                "Query": ql.query_text[:50] + "...",
-                "User Rating": "👍" if fb.rating.value == "up" else "👎",
-                "Judge Score": f"{fb.llm_judge_score:.3f}",
-            })
-        st.dataframe(pd.DataFrame(rows), use_container_width=True)
+        # Show recent feedback from metrics
+        recent = judge_data.get("recent", [])
+        if recent:
+            rows = []
+            for item in recent:
+                rows.append({
+                    "Query": item.get("query", "")[:50] + "...",
+                    "User Rating": "👍" if item.get("rating") == "up" else "👎",
+                    "Judge Score": f"{item.get('score', 0):.3f}",
+                })
+            st.dataframe(pd.DataFrame(rows), use_container_width=True)
     else:
         st.info("No scored feedback yet. Run: python scripts/llm_judge_batch.py")
-    db_local.close()
 except Exception as e:
     st.error(f"Could not load judge scores: {e}")
 

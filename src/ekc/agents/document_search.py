@@ -19,7 +19,7 @@ def document_search_node(state: AgentState) -> AgentState:
 
     # Check response-level cache first — skips retrieval AND LLM entirely
     cache = get_cache()
-    cached_response = cache.get_response(state["query"])
+    cached_response = cache.get_response(state["query"], role=str(state.get("user_role", "default")))
     if cached_response:
         logger.info(f"Response cache hit for: {state['query'][:50]}")
         return {
@@ -120,12 +120,13 @@ def document_search_node(state: AgentState) -> AgentState:
         for pair in ['the','to','with','by','and','in','of']:
             clean_cached_answer = _space_re.sub(r'([a-z])(' + pair + r')([A-Z\s])', r'\1 \2\3', clean_cached_answer)
         if not fallback and clean_cached_answer:
+            _cache_role = str(state.get("user_role", "default"))
             cache.set_response(state["query"], {
                 "answer": clean_cached_answer,
                 "sources": result.sources,
                 "confidence_score": result.confidence_score,
                 "follow_up_suggestions": result.follow_up_suggestions,
-            })
+            }, role=_cache_role)
  
         return {
             **state,

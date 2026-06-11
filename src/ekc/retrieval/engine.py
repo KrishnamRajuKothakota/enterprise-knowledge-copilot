@@ -109,7 +109,7 @@ class HybridRetrievalEngine:
         """
         # 1. Check cache
         if use_cache:
-            cached = self.cache.get(query)
+            cached = self.cache.get(query, role=str(user_role.value) if user_role else "default")
             if cached:
                 chunk_ids = [c[0] for c in cached]
                 chunk_ids = self.role_injector.filter_by_role(
@@ -160,7 +160,7 @@ class HybridRetrievalEngine:
 
         # 8. Cache the pre-RBAC results (so different roles share the cache)
         if use_cache and reranked:
-            self.cache.set(query, reranked)
+            self.cache.set(query, reranked, role=str(user_role.value) if user_role else "default")
 
         # Fetch full chunk objects
         chunks = self._fetch_chunks(allowed_ids, final_pairs)

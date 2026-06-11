@@ -55,6 +55,30 @@ def get_metrics(
         RagasEvaluation.run_date.desc()
     ).first()
 
+    # LLM judge stats
+    scored_feedback = db.query(Feedback).filter(
+        Feedback.llm_judge_score.isnot(None)
+    ).count()
+    avg_judge_score = db.query(func.avg(Feedback.llm_judge_score)).filter(
+        Feedback.llm_judge_score.isnot(None)
+    ).scalar() or 0
+
+    # Recent scored feedback for dashboard table
+    from src.ekc.db.models import QueryLog as QL
+    recent_scored = db.query(Feedback, QL).join(
+        QL, Feedback.query_id == QL.query_id
+    ).filter(
+        Feedback.llm_judge_score.isnot(None)
+    ).order_by(Feedback.created_at.desc()).limit(10).all()
+
+    recent_list = []
+    for fb, ql in recent_scored:
+        recent_list.append({
+            "query": ql.query_text[:60],
+            "rating": fb.rating.value,
+            "score": round(fb.llm_judge_score, 3),
+        })
+
     # Corpus stats
     total_docs = db.query(Document).count()
     total_chunks = db.query(ChunkModel).count()
@@ -76,6 +100,11 @@ def get_metrics(
             "context_precision": latest_ragas.context_precision if latest_ragas else None,
             "answer_relevancy": latest_ragas.answer_relevancy if latest_ragas else None,
             "run_date": latest_ragas.run_date.isoformat() if latest_ragas else None,
+        },
+        "llm_judge": {
+            "avg_score": round(avg_judge_score, 3),
+            "scored_count": scored_feedback,
+            "recent": recent_list,
         },
         "corpus": {
             "total_documents": total_docs,

@@ -26,13 +26,13 @@ class QueryCache:
             socket_connect_timeout=2,
         )
 
-    def _key(self, query: str) -> str:
-        h = hashlib.sha256(query.lower().strip().encode()).hexdigest()[:16]
+    def _key(self, query: str, role: str = "default") -> str:
+        h = hashlib.sha256(f"{role}:{query.lower().strip()}".encode()).hexdigest()[:16]
         return f"{CACHE_PREFIX}{h}"
 
-    def get(self, query: str) -> Optional[list[tuple[str, float]]]:
+    def get(self, query: str, role: str = "default") -> Optional[list[tuple[str, float]]]:
         try:
-            val = self._client.get(self._key(query))
+            val = self._client.get(self._key(query, role))
             if val:
                 logger.debug(f"Cache HIT: '{query[:50]}'")
                 return json.loads(val)
@@ -40,10 +40,10 @@ class QueryCache:
             logger.debug(f"Cache get error: {e}")
         return None
 
-    def set(self, query: str, results: list[tuple[str, float]]):
+    def set(self, query: str, results: list[tuple[str, float]], role: str = "default"):
         try:
             self._client.setex(
-                self._key(query),
+                self._key(query, role),
                 CACHE_TTL,
                 json.dumps(results),
             )
@@ -51,16 +51,16 @@ class QueryCache:
         except Exception as e:
             logger.debug(f"Cache set error: {e}")
 
-    def invalidate(self, query: str):
+    def invalidate(self, query: str, role: str = "default"):
         try:
-            self._client.delete(self._key(query))
+            self._client.delete(self._key(query, role))
         except Exception:
             pass
         
-    def get_response(self, query: str) -> dict | None:
+    def get_response(self, query: str, role: str = "default") -> dict | None:
         """Cache full LLM response including answer, sources, confidence."""
         try:
-            val = self._client.get(f"resp:{self._key(query)}")
+            val = self._client.get(f"resp:{self._key(query, role)}")
             if val:
                 logger.debug(f"Response cache HIT: '{query[:50]}'")
                 return json.loads(val)
@@ -68,11 +68,11 @@ class QueryCache:
             logger.debug(f"Response cache get error: {e}")
         return None
 
-    def set_response(self, query: str, response: dict):
+    def set_response(self, query: str, response: dict, role: str = "default"):
         """Cache full LLM response for 24 hours."""
         try:
             self._client.setex(
-                f"resp:{self._key(query)}",
+                f"resp:{self._key(query, role)}",
                 CACHE_TTL,
                 json.dumps(response),
             )
