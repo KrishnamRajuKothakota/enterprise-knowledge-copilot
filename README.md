@@ -49,12 +49,20 @@ Evaluated on-premise using Qwen3-8B as both system LLM and judge (zero external 
 
 | Metric | Score | Target | Status |
 |---|---|---|---|
-| Faithfulness | **0.894** | > 0.88 | ✅ Meets target |
-| Context Precision | 0.647 | > 0.85 | ⚠️ On-premise judge conservative |
-| Answer Relevancy | 0.792 | > 0.85 | ⚠️ On-premise judge conservative |
-| Context Recall | 0.604 | > 0.80 | ⚠️ On-premise judge conservative |
-| **Unanswerable Detection** | **91%** | > 85% | ✅ Meets target |
-| Cache Hit Rate | **61%** | > 35% | ✅ Exceeds target |
+| Metric | SOP Domain (n=15) | Full Corpus (n=100) | Target |
+|---|---|---|---|
+| Faithfulness | 0.721 | 0.565 | > 0.88 |
+| Answer Relevancy | **0.935** ✅ | 0.834 | > 0.85 |
+| Context Precision | 0.647 | 0.377 | > 0.85 |
+| Context Recall | 0.564 | 0.273 | > 0.80 |
+| **Unanswerable Detection** | **91%** ✅ | n=22 adversarial | > 85% |
+| **Cache Hit Rate** | **61%** ✅ | production measured | > 35% |
+
+> SOP domain = primary production use case (enterprise IT procedures).
+> Full corpus includes 85 K8s supplementary-knowledge pairs where ground
+> truths assume complete docs coverage not fully ingested.
+> All metrics self-judged (Qwen3-8B on-premise — no external API calls).
+> See docs/evaluation_notes.md for full methodology.
 
 > Context precision/recall scores reflect the on-premise judge constraint — the same hardware that serves queries also grades them. GPT-4-judged scores would be higher but would require sending enterprise data to an external API, violating DPDP compliance.
 
