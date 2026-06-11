@@ -1,0 +1,502 @@
+[
+  {
+    "question": "What is the SLA for P1 incident resolution at SriniInfotech?",
+    "ground_truth": "P1 communication must be sent within 15 minutes. L2 acknowledgement within SLA target is greater than 98%. The escalation package completeness score target is greater than 90%. Incidents are categorized by type such as Network, Application, Hardware, Security, or Database.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "What are the steps to escalate a P1 incident at SriniInfotech?",
+    "ground_truth": "L1 escalates by reassigning the ticket to the appropriate L2 resolver group with a concise handover note. L2 acknowledges within SLA and continues diagnosis. The escalation package completeness score target is greater than 90%.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "What is the escalation path for unresolved L1 tickets?",
+    "ground_truth": "L1 escalates by reassigning the ticket to the appropriate L2 resolver group with a concise handover note. L2 acknowledges within SLA and continues diagnosis. Escalation to L2/L3 follows the defined procedure in section 4.4 of the incident management SOP.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How are incidents classified by priority at SriniInfotech?",
+    "ground_truth": "Incidents are categorized by type including Network, Application, Hardware, Security, and Database. Priority classification follows the Classification and Prioritization procedure in section 4.2 of the incident management SOP. P1 communication must be sent within 15 minutes of classification.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "What are the IT onboarding steps for a new employee at SriniInfotech?",
+    "ground_truth": "The IT onboarding SOP defines the end-to-end process for provisioning new employee IT access. Steps include account creation, system access provisioning, and equipment setup following the standard onboarding procedure.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "What happens during the post-onboarding period for new IT hires?",
+    "ground_truth": "Post-onboarding follow-up ensures all provisioned access is working correctly and the new hire can perform their role. The IT team verifies system access, resolves any access issues, and confirms equipment is operational.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How do I provision VPN access for a new user?",
+    "ground_truth": "VPN access provisioning follows the IT access management SOP. The process includes submitting an access request, verifying role entitlement, creating credentials, and testing connectivity. The request requires manager approval.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How do I troubleshoot a VPN connection failure?",
+    "ground_truth": "VPN troubleshooting involves verifying internet connectivity, checking VPN client installation, confirming credentials are valid, and checking firewall settings. Unresolved issues after initial diagnosis are escalated to L2 following section 4.4 escalation procedures.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "What is the change management process at SriniInfotech?",
+    "ground_truth": "Changes require a Change Request submitted for approval. Changes are classified by type and risk. The change management process includes impact assessment, approval, and rollback planning before implementation.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How does SriniInfotech handle patch management?",
+    "ground_truth": "Patches are applied to Dev/Test environment first. A functional regression test suite is run after applying patches to Dev/Test. Patches follow a monthly patch cycle. Fast-track testing uses an abbreviated regression process. Critical patches can be fast-tracked outside the monthly cycle.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "What is the backup and recovery procedure at SriniInfotech?",
+    "ground_truth": "The backup SOP defines backup schedules, retention policies, recovery procedures, and testing requirements to ensure data resilience and business continuity across all SriniInfotech IT systems. The Infra Ops Engineer performs daily backup monitoring and resolves failed jobs.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How do I perform a Kubernetes rollback for a deployment?",
+    "ground_truth": "Use kubectl rollout undo deployment/<name> to rollback to the previous revision. To rollback to a specific revision use kubectl rollout undo deployment/<name> --to-revision=<number>. For StatefulSets use kubectl rollout undo statefulset/<name>.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How do I check Kubernetes rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to check the status of a rollout. This command waits until the rollout completes and shows progress. For history use kubectl rollout history deployment/<name>.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "What kind of issues does the auth-service commonly experience?",
+    "ground_truth": "The auth-service commonly experiences CrashLoopBackOff errors after deployments and pod restart issues. These are typically caused by configuration errors, resource limits, or image registry authentication failures.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How do I access the IT Policy Repository at SriniInfotech?",
+    "ground_truth": "The IT Policy Repository is maintained in SharePoint under IT Policies > SOPs. The master copy of all SOPs is stored there. Printed copies are subject to document control procedures.",
+    "category": "sop_aligned"
+  },
+  {
+    "question": "How to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to restart a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl rollout restart deployment/<name> to restart all pods in the deployment.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to stop a running Docker container in Kubernetes?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to inspect deployment rollout status in Kubernetes?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to stop a running Docker container?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I restart a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl rollout restart deployment/<name> to restart all pods in the deployment.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to expose a deployment as a service?",
+    "ground_truth": "Use kubectl expose deployment <name> --type=ClusterIP --port=<port>.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to verify Helm releases?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to debug DNS issues in Kubernetes?",
+    "ground_truth": "Check CoreDNS pod status and test DNS resolution using nslookup inside pods.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to verify Helm releases?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I stop a running Docker container?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I view logs from a Kubernetes pod?",
+    "ground_truth": "Use kubectl logs <pod-name> to fetch logs from the pod container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to check ingress resources in Kubernetes?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to delete a failed pod in Kubernetes?",
+    "ground_truth": "Use kubectl delete pod <pod-name> to remove the pod and allow recreation.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to check node status in Kubernetes?",
+    "ground_truth": "Use kubectl get nodes and kubectl describe node <node-name> to inspect node health.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I debug DNS issues in Kubernetes?",
+    "ground_truth": "Check CoreDNS pod status and test DNS resolution using nslookup inside pods.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to check resource usage in Kubernetes?",
+    "ground_truth": "Use kubectl top pods and kubectl top nodes to monitor resource consumption.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to check node status in Kubernetes?",
+    "ground_truth": "Use kubectl get nodes and kubectl describe node <node-name> to inspect node health.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to verify Helm releases?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to inspect deployment rollout status?",
+    "ground_truth": "Use kubectl rollout status deployment/<name> to monitor deployment progress.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to expose a deployment as a service in Kubernetes?",
+    "ground_truth": "Use kubectl expose deployment <name> --type=ClusterIP --port=<port>.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to delete a failed pod?",
+    "ground_truth": "Use kubectl delete pod <pod-name> to remove the pod and allow recreation.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to resolve Pending pods?",
+    "ground_truth": "Check resource availability, PVC bindings, taints, tolerations, and scheduler events.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to resolve Pending pods in Kubernetes?",
+    "ground_truth": "Check resource availability, PVC bindings, taints, tolerations, and scheduler events.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to verify Helm releases in Kubernetes?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to stop a running Docker container in Kubernetes?",
+    "ground_truth": "Use docker stop <container-id> to gracefully stop the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I debug DNS issues in Kubernetes?",
+    "ground_truth": "Check CoreDNS pod status and test DNS resolution using nslookup inside pods.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to troubleshoot ImagePullBackOff in Kubernetes?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to scale a deployment in Kubernetes?",
+    "ground_truth": "Use kubectl scale deployment/<name> --replicas=<count> to scale the deployment.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to verify Helm releases in Kubernetes?",
+    "ground_truth": "Use helm list and helm status <release-name> to inspect Helm deployments.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to restart a Docker container in Kubernetes?",
+    "ground_truth": "Use docker restart <container-id> to restart the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to rebuild a Docker image without cache?",
+    "ground_truth": "Use docker build --no-cache -t <image-name> . to force a fresh build.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to describe a Kubernetes service?",
+    "ground_truth": "Use kubectl describe service <service-name> to inspect service details.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I rollback a Helm release?",
+    "ground_truth": "Use helm rollback <release-name> <revision-number> to restore a previous release.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to inspect Docker container logs?",
+    "ground_truth": "Use docker logs <container-id> to view application logs.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to cordon a Kubernetes node?",
+    "ground_truth": "Use kubectl cordon <node-name> to mark the node unschedulable.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I rebuild a Docker image without cache?",
+    "ground_truth": "Use docker build --no-cache -t <image-name> . to force a fresh build.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to rebuild a Docker image without cache?",
+    "ground_truth": "Use docker build --no-cache -t <image-name> . to force a fresh build.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I check Kubernetes namespaces?",
+    "ground_truth": "Use kubectl get namespaces to list all namespaces.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to troubleshoot ImagePullBackOff?",
+    "ground_truth": "Verify image name, registry access, imagePullSecrets, and network connectivity.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How do I drain a Kubernetes node?",
+    "ground_truth": "Use kubectl drain <node-name> --ignore-daemonsets to safely evict workloads.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to list running Docker containers?",
+    "ground_truth": "Use docker ps to view currently running containers.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to restart a Docker container?",
+    "ground_truth": "Use docker restart <container-id> to restart the container.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "How to remove unused Docker images?",
+    "ground_truth": "Use docker image prune to clean up dangling and unused images.",
+    "category": "k8s_docs"
+  },
+  {
+    "question": "What is the command to check ingress resources?",
+    "ground_truth": "Use kubectl get ingress to list ingress resources in the cluster.",
+    "category": "k8s_docs"
+  }
+]
