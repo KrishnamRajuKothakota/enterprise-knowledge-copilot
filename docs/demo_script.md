@@ -49,3 +49,57 @@ reflect the actual deployment."
 Q: "Is this actually on-premise?"
 A: "Yes — Ollama on host, all data in PostgreSQL and FAISS on VM.
 Nothing touches an external API."
+
+## Scenario 6 — Self-Improving Feedback Loop (NEW)
+
+**Narrative:** Show the system has learned from user feedback.
+
+**Step 1** — Open Dashboard → Weight Signals panel. Show k8s_docker: BM25=0.6, Vector=0.4.
+Say: "After users rated K8s responses poorly, the system detected this pattern overnight
+and rebalanced retrieval — giving more weight to keyword search for technical commands."
+
+**Step 2** — Show the LLM judge scores table. Point out the thumbs-down K8s entries
+scored low (0.0, 0.4) which triggered the rebalancing.
+
+**Script:** "This is the self-improving feedback loop in action. Five K8s thumbs-down
+ratings, one overnight judge batch, and the retrieval weights automatically adjusted.
+No manual tuning, no retraining — the system learned from usage."
+
+---
+
+## Scenario 7 — Organic Knowledge Graph Multi-Hop (NEW)
+
+**Query:** "What procedures cover VPN access issues on Lenovo devices?"
+
+**What to say:** "This query doesn't mention any SOP by name. The knowledge graph
+traverses: Lenovo device → related to → sop:vpn_access → retrieves SOP chunks.
+The connection between a hardware brand and an IT procedure only exists in the
+graph — not in any single document. This is multi-hop reasoning, not keyword search."
+
+**Expected:** Answer citing SriniInfotech SOPs Volume 1, confidence ~60%.
+
+**Note:** Cisco router query correctly refuses — demonstrates honest knowledge boundaries.
+
+---
+
+## Scenario 8 — Unanswerable Detection
+
+**Query:** "What is the WiFi password for the Mumbai office?"
+
+**Expected:** "I don't have enough information" — confidence ~10%.
+
+**What to say:** "The system refuses to hallucinate. It retrieves, finds no grounded
+answer, and says so. 91% refusal rate on 22 adversarial out-of-scope queries."
+
+---
+
+## Pre-Demo Checklist
+
+- [ ] bash scripts/start.sh (starts everything)
+- [ ] python scripts/warm_cache.py (all queries <200ms)
+- [ ] Confirm health: curl -sk https://localhost/health
+- [ ] Open Streamlit at http://localhost:8501
+- [ ] Login as admin@ekc.local
+- [ ] Open Dashboard tab — verify RAGAS scores and weight signals show
+- [ ] Switch to junior@ekc.local — show role-adaptive response difference
+- [ ] Have all 8 query strings ready to paste
