@@ -15,6 +15,8 @@ r = httpx.post(f"{API}/auth/login",
 token = r.json()["access_token"]
 headers = {"Authorization": f"Bearer {token}"}
 
+ROLES = ["junior_engineer", "l1_support", "lead", "admin"]
+
 DEMO_QUERIES = [
     "Resolve ticket JRA-1001: auth-service CrashLoopBackOff after deployment",
     "Auto-resolve: Pod ImagePullBackOff in production namespace",
@@ -30,19 +32,24 @@ DEMO_QUERIES = [
     "What is the incident management escalation procedure?",
 ]
 
-print("Warming cache for demo queries...")
-for i, query in enumerate(DEMO_QUERIES, 1):
-    print(f"  [{i}/{len(DEMO_QUERIES)}] {query[:55]}...", end=" ", flush=True)
-    start = time.time()
-    r = httpx.post(f"{API}/query",
-        json={"query": query}, headers=headers, timeout=120)
-    elapsed = time.time() - start
-    if r.status_code == 200:
-        conf = r.json().get("confidence_score", 0)
-        cached = r.json().get("cache_hit", False)
-        print(f"✓ {elapsed:.1f}s conf={conf:.0%} {'(cached)' if cached else ''}")
-    else:
-        print(f"✗ error {r.status_code}")
+ROLES = ["junior_engineer", "l1_support", "lead", "admin"]
 
+print("Warming cache for demo queries (all 4 roles)...")
+for role in ROLES:
+    print(f"\n  Role: {role}")
+    for i, query in enumerate(DEMO_QUERIES, 1):
+        print(f"    [{i}/{len(DEMO_QUERIES)}] {query[:45]}...", end=" ", flush=True)
+        start = time.time()
+        r = httpx.post(f"{API}/query",
+            json={"query": query, "role": role}, headers=headers, timeout=120)
+        elapsed = time.time() - start
+        if r.status_code == 200:
+            data = r.json()
+            conf = data.get("confidence_score", 0)
+            cached = data.get("cache_hit", False)
+            status = "(cached)" if cached else ""
+            print(f"✓ {elapsed:.1f}s conf={conf:.0%} {status}")
+        else:
+            print(f"✗ error {r.status_code}")
 print()
-print("Cache warmed. All demo queries will now respond in <1s.")
+print("Cache warmed for all 4 roles. Done.")

@@ -63,7 +63,7 @@ class ResponseFormatter:
 
         # Replace PII redaction tokens with readable text
         import re as _re
-        answer = _re.sub(r'\[PERSON_?\d*\]', 'the responsible person', answer)
+        answer = _re.sub(r'\[PERSON_?\d*\]', '[name redacted]', answer)
         answer = _re.sub(r'\[EMAIL_?\d*\]', '[redacted email]', answer)
         answer = _re.sub(r'\[PHONE_?\d*\]', '[redacted phone]', answer)
         answer = _re.sub(r'\[AADHAAR_?\d*\]', '[redacted ID]', answer)
