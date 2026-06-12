@@ -252,7 +252,7 @@ with col_chat:
                 st.markdown(
                     f"<span class='{conf_class}'>Confidence: {conf:.0%}</span> "
                     f"{'⚡ cached' if msg.get('cache_hit') else ''}"
-                    f"{'⚠️ fallback' if msg.get('fallback') else ''}",
+                    f"{'🔺 escalated' if msg.get('escalated') else ('⚠️ fallback' if msg.get('fallback') else '')}",
                     unsafe_allow_html=True,
                 )
 
@@ -330,7 +330,7 @@ with col_chat:
                 st.markdown(
                     f"<span class='{conf_class}'>Confidence: {conf:.0%}</span> "
                     f"{'⚡ cached' if result.get('cache_hit') else ''}"
-                    f"{'⚠️ fallback' if result.get('fallback') else ''}",
+                    f"{'🔺 escalated' if result.get('escalated') else ('⚠️ fallback' if result.get('fallback') else '')}",
                     unsafe_allow_html=True,
                 )
 

@@ -51,6 +51,7 @@ class QueryResponse(BaseModel):
     query_id: str
     cache_hit: bool
     fallback: bool
+    escalated: bool
 
 
 @router.post("/query", response_model=QueryResponse)
@@ -94,6 +95,7 @@ async def query_endpoint(
         "follow_up_suggestions": [],
         "cache_hit": False,
         "fallback": False,
+        "escalated": False,
         "iteration_count": 0,
         "error": "",
     }
@@ -138,4 +140,5 @@ async def query_endpoint(
         query_id=query_id,
         cache_hit=final_state.get("cache_hit", False),
         fallback=final_state.get("fallback", False),
+        escalated=final_state.get("escalated", False),
     )

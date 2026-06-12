@@ -49,5 +49,6 @@ def escalation_node(state: AgentState) -> AgentState:
             "View similar resolved tickets",
             "Check escalation SOP",
         ],
-        "fallback": True,
+        "fallback": False,
+        "escalated": True,
     }

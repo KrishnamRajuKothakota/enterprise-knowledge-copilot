@@ -17,5 +17,6 @@ class AgentState(TypedDict):
     follow_up_suggestions: list[str]
     cache_hit: bool
     fallback: bool
+    escalated: bool
     iteration_count: int           # loop guard for REGENERATING state
     error: str
