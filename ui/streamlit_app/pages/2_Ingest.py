@@ -29,7 +29,7 @@ col1, col2 = st.columns(2)
 with col1:
     file_path = st.text_input(
         "File path (on server)",
-        placeholder="/home/nasscomhackathon/enterprise-knowledge-copilot/data/raw/your_file.pdf"
+        placeholder="data/raw/your_file.pdf"
     )
     namespace = st.selectbox(
         "Namespace",
@@ -76,7 +76,7 @@ if st.button("🚀 Ingest Document", type="primary"):
 st.markdown("---")
 st.subheader("📁 Available files in data/raw/")
 
-data_dir = "/home/nasscomhackathon/enterprise-knowledge-copilot/data/raw"
+data_dir = os.path.join(os.getcwd(), "data", "raw")
 try:
     files = []
     for f in os.listdir(data_dir):

@@ -45,24 +45,22 @@ A 7-layer on-premise AI system that:
 
 ## RAGAS Evaluation Results
 
-Evaluated on-premise using Qwen3-8B as both system LLM and judge (zero external API calls):
+Evaluated on-premise using Qwen3-8B as both system LLM and judge (zero external API calls).
+Full methodology in [docs/evaluation_notes.md](docs/evaluation_notes.md).
 
-| Metric | Score | Target | Status |
-|---|---|---|---|
 | Metric | SOP Domain (n=15) | Full Corpus (n=100) | Target |
 |---|---|---|---|
 | Faithfulness | 0.721 | 0.565 | > 0.88 |
 | Answer Relevancy | **0.935** ✅ | 0.834 | > 0.85 |
 | Context Precision | 0.647 | 0.377 | > 0.85 |
 | Context Recall | 0.564 | 0.273 | > 0.80 |
-| **Unanswerable Detection** | **91%** ✅ | n=22 adversarial | > 85% |
-| **Cache Hit Rate** | **61%** ✅ | production measured | > 35% |
+| Unanswerable Detection | **91%** ✅ (n=22) | — | > 85% |
+| Cache Hit Rate | **61%** ✅ | production | > 35% |
 
-> SOP domain = primary production use case (enterprise IT procedures).
-> Full corpus includes 85 K8s supplementary-knowledge pairs where ground
-> truths assume complete docs coverage not fully ingested.
-> All metrics self-judged (Qwen3-8B on-premise — no external API calls).
-> See docs/evaluation_notes.md for full methodology.
+> **SOP domain** = primary production use case (enterprise IT procedures, 15 aligned Q&A pairs).
+> **Full corpus** = 85 Kubernetes supplementary-knowledge pairs added for breadth; ground truths
+> assume complete K8s docs coverage not fully ingested — scores reflect this gap honestly.
+> All metrics self-judged on-premise (Qwen3-8B) — no external API calls, consistent with DPDP constraint.
 
 > Context precision/recall scores reflect the on-premise judge constraint — the same hardware that serves queries also grades them. GPT-4-judged scores would be higher but would require sending enterprise data to an external API, violating DPDP compliance.
 

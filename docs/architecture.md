@@ -37,7 +37,7 @@ No queries or documents leave the enterprise network boundary.
 
 ### Layer 5 — LLM Response Generation
 - Qwen3-8B 4-bit quantised via Ollama (fully on-premise)
-- HallucinationGuard: RAGAS faithfulness check, threshold 0.75
+- HallucinationGuard: regex grounding check + re-prompt on low confidence (weekly RAGAS batch for full evaluation)
 - CitationEnforcer: every factual claim references a chunk_id
 - Response schema: {answer, sources, confidence_score, follow_up_suggestions}
 
@@ -47,7 +47,7 @@ No queries or documents leave the enterprise network boundary.
 - Weekly RAGAS evaluation on rolling sample
 
 ### Layer 7 — Evaluation & Observability
-- RAGAS Faithfulness: 0.894 (target >0.88) ✅
+- RAGAS Faithfulness: 0.721 SOP domain / 0.565 full corpus (see evaluation_notes.md)
 - Full audit log retained 12 months (DPDP Act compliance)
 - Streamlit dashboard: RAGAS metrics, query volume, feedback
 

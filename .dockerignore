@@ -1,0 +1,10 @@
+.env
+.git
+venv/
+__pycache__/
+*.pyc
+data/raw/
+data/backups/
+data/indexes/
+*.log
+.gitignore
