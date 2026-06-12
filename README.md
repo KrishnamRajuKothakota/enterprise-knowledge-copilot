@@ -8,7 +8,7 @@ A fully on-premise, multi-agent RAG system that transforms scattered enterprise 
 
 ## Demo Video
 
-▶️ [Watch the demo on Google Drive](#) *(link will be added before June 15 submission)*
+▶️ Demo video will be added before June 15 submission — see hackathon portal for link
 
 ---
 

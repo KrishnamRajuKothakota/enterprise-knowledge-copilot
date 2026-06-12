@@ -1,8 +1,4 @@
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 from fastapi import Request
-
-limiter = Limiter(key_func=get_remote_address)
 
 """POST /api/v1/query — main query endpoint."""
 import uuid
@@ -55,7 +51,6 @@ class QueryResponse(BaseModel):
 
 
 @router.post("/query", response_model=QueryResponse)
-@limiter.limit("60/minute")
 async def query_endpoint(
     request: Request,
     req: QueryRequest,
@@ -100,7 +95,9 @@ async def query_endpoint(
         "error": "",
     }
 
-    final_state = graph.invoke(initial_state)
+    import asyncio
+    loop = asyncio.get_event_loop()
+    final_state = await loop.run_in_executor(None, graph.invoke, initial_state)
 
     latency_ms = int((time.time() - start) * 1000)
     query_id = str(uuid.uuid4())

@@ -18,7 +18,7 @@ No queries or documents leave the enterprise network boundary.
 - Entity types: Technology, Project, Team, SOP, Ticket
 - Alias resolution: "K8s" → tech:kubernetes
 - NetworkX DiGraph + GraphML + PostgreSQL SQL mirror
-- 14,688 nodes, 130,863 edges
+- 19,797 nodes, 162,509 edges
 
 ### Layer 3 — Triple-Fusion Retrieval
 - FAISS IndexFlatIP vector search (top-5)

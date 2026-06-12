@@ -65,6 +65,10 @@ app.include_router(prometheus.router, tags=["Observability"])
 
 @app.on_event("startup")
 async def startup():
+    # Security guard — refuse to start with default secret in production
+    import os
+    if settings.app_env == "production" and settings.jwt_secret_key == "change-me-in-production":
+        raise RuntimeError("JWT_SECRET_KEY must be changed from default in production")
     print(f"EKC starting — env={settings.app_env}, "
           f"ollama={settings.ollama_base_url}, "
           f"model={settings.ollama_model}")
