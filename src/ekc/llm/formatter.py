@@ -39,27 +39,12 @@ class ResponseFormatter:
         # Generate follow-up suggestions based on top chunk content
         follow_ups = self._suggest_follow_ups(chunks)
 
-        # Fix missing spaces between words (LLM tokenization artifact)
+        # Fix camelCase spacing only (safe, low false-positive rate)
+        # Root cause (repeat_penalty=1.0) already fixed — only keep safe fixes
         import re as _re2
-        # camelCase: lowercase->uppercase
         answer = _re2.sub(r'([a-z])([A-Z])', r'\1 \2', answer)
-        # ALLCAPS->lowercase: e.g. VPNissue -> VPN issue
-        answer = _re2.sub(r'([A-Z]{2,})([a-z])', r'\1 \2', answer)
-        # lowercase->digit or digit->lowercase
-        answer = _re2.sub(r'([a-z])([0-9])', r'\1 \2', answer)
-        answer = _re2.sub(r'([0-9])([a-z])', r'\1 \2', answer)
-        # Fix common concatenations: word ending + common prepositions/articles
-        for pair in [('the','The'),('to','To'),('with','With'),('by','By'),
-                     ('and','And'),('in','In'),('of','Of'),('a','A'),('an','An')]:
-            answer = _re2.sub(r'([a-z])(' + pair[0] + r')([A-Z\s])', r'\1 \2\3', answer)
-        # Add space after punctuation if missing
-        answer = _re2.sub(r'([.,;:])([A-Za-z])', r'\1 \2', answer)
-        # Fix spurious spaces inside words (e.g. "Okt a" -> "Okta")
-        answer = _re2.sub(r'([A-Za-z]{2,})\s([a-z]{1,2})(\s)', r'\1\2\3', answer)
-        # Fix space before punctuation
-        answer = _re2.sub(r'\s+([.,;:])', r'\1', answer)
-        # Collapse multiple spaces
-        answer = _re2.sub(r' {2,}', ' ', answer)
+        answer = _re2.sub(r'([A-Z]{2,})([a-z]{2,})', r'\1 \2', answer)
+        answer = _re2.sub(r' {2,}', ' ', answer).strip()
 
         # Replace PII redaction tokens with readable text
         import re as _re

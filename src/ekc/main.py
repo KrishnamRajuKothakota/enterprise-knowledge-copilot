@@ -16,7 +16,21 @@ from src.ekc.api.routes import health, auth, query, feedback, metrics, ingest, p
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 
 # App
+from fastapi.responses import JSONResponse
+import json as _json
+
+class UnicodeJSONResponse(JSONResponse):
+    def render(self, content) -> bytes:
+        return _json.dumps(
+            content,
+            ensure_ascii=False,
+            allow_nan=False,
+            indent=None,
+            separators=(',', ':'),
+        ).encode('utf-8')
+
 app = FastAPI(
+    default_response_class=UnicodeJSONResponse,
     title="Enterprise Knowledge Copilot",
     description="Multi-agent RAG system with triple-fusion retrieval",
     version="1.0.0",
@@ -30,10 +44,14 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:8501",
+        "https://localhost",
+        "http://localhost:8000",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Routers

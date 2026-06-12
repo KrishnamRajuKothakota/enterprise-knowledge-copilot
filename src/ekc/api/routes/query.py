@@ -20,12 +20,20 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 def _resolve_role(requested_role, jwt_role):
-    """Use requested role if valid, else fall back to JWT role."""
+    """
+    Use requested role for demo role-switching.
+    Security: only admin users can switch to any role.
+    Non-admin users can only switch between non-admin roles.
+    This prevents privilege escalation via the role parameter.
+    """
     from src.ekc.db.models import UserRole
     valid = {r.value for r in UserRole}
-    if requested_role and requested_role in valid:
-        return UserRole(requested_role)
-    return jwt_role
+    if not requested_role or requested_role not in valid:
+        return jwt_role
+    # Only admin JWT can assume admin role
+    if requested_role == "admin" and jwt_role.value != "admin":
+        return jwt_role
+    return UserRole(requested_role)
 
 
 class QueryRequest(BaseModel):

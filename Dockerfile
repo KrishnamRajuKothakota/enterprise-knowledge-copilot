@@ -22,7 +22,7 @@ COPY ui/ ui/
 COPY scripts/ scripts/
 COPY data/indexes/ data/indexes/
 COPY data/eval/ data/eval/
-COPY .env .env
+# .env is NOT baked into image — mount via docker-compose env_file or environment
 
 # Create necessary directories
 RUN mkdir -p data/backups data/raw

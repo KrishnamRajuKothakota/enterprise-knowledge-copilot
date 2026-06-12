@@ -25,7 +25,7 @@ class RegisterRequest(BaseModel):
     name: str
     email: str
     password: str
-    role: UserRole = UserRole.junior_engineer
+    role: UserRole = UserRole.junior_engineer  # capped at junior_engineer for self-service
     department: str | None = None
 
 
@@ -47,12 +47,15 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
 def register(req: RegisterRequest, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == req.email).first():
         raise HTTPException(status_code=409, detail="Email already registered")
+    # Security: self-service registration cannot create admin accounts
+    # Admin accounts must be created via scripts/seed_users.py
+    safe_role = req.role if req.role != UserRole.admin else UserRole.junior_engineer
     user = User(
         user_id=str(uuid.uuid4()),
         name=req.name,
         email=req.email,
         password_hash=hash_password(req.password),
-        role=req.role,
+        role=safe_role,
         department=req.department,
     )
     db.add(user)

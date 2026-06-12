@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     # LLM
     ollama_base_url: str = "http://172.16.29.1:11434"
     ollama_model: str = "qwen3:8b"
-    ollama_timeout: int = 30
+    ollama_timeout: int = 90
     ollama_keep_alive: str = "-1"
 
     # Database

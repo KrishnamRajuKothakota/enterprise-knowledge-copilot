@@ -115,10 +115,7 @@ def document_search_node(state: AgentState) -> AgentState:
         import re as _space_re
         clean_cached_answer = result.answer
         clean_cached_answer = _space_re.sub(r'([a-z])([A-Z])', r'\1 \2', clean_cached_answer)
-        clean_cached_answer = _space_re.sub(r'([A-Z]{2,})([a-z])', r'\1 \2', clean_cached_answer)
-        clean_cached_answer = _space_re.sub(r'([.,;:])([A-Za-z])', r'\1 \2', clean_cached_answer)
-        for pair in ['the','to','with','by','and','in','of']:
-            clean_cached_answer = _space_re.sub(r'([a-z])(' + pair + r')([A-Z\s])', r'\1 \2\3', clean_cached_answer)
+        clean_cached_answer = _space_re.sub(r' {2,}', ' ', clean_cached_answer).strip()
         if not fallback and clean_cached_answer:
             _cache_role = str(state.get("user_role", "default"))
             cache.set_response(state["query"], {
