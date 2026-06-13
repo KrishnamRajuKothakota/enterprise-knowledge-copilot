@@ -39,11 +39,10 @@ class ResponseFormatter:
         # Generate follow-up suggestions based on top chunk content
         follow_ups = self._suggest_follow_ups(chunks)
 
-        # Fix camelCase spacing only (safe, low false-positive rate)
-        # Root cause (repeat_penalty=1.0) already fixed — only keep safe fixes
+        # Spacing: only collapse multiple spaces. The camelCase regex was removed
+        # because it destroyed IT terms (CrashLoopBackOff, macOS, kubectl, URLs).
+        # Root cause of spacing artifacts (repeat_penalty=1.0) is already fixed.
         import re as _re2
-        answer = _re2.sub(r'([a-z])([A-Z])', r'\1 \2', answer)
-        answer = _re2.sub(r'([A-Z]{2,})([a-z]{2,})', r'\1 \2', answer)
         answer = _re2.sub(r' {2,}', ' ', answer).strip()
 
         # Replace PII redaction tokens with readable text

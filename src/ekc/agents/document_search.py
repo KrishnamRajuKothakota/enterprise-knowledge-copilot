@@ -17,9 +17,14 @@ MAX_RETRIES = 2
 def document_search_node(state: AgentState) -> AgentState:
     from src.ekc.retrieval.cache import get_cache
 
-    # Check response-level cache first — skips retrieval AND LLM entirely
+    # Check response-level cache first — skips retrieval AND LLM entirely.
+    # Skip cache entirely for follow-up queries (those with conversation history),
+    # because a context-free cached answer would be wrong for a contextual question.
     cache = get_cache()
-    cached_response = cache.get_response(state["query"], role=str(state.get("user_role", "default")))
+    _has_history = bool(state.get("conversation_history"))
+    cached_response = None if _has_history else cache.get_response(
+        state["query"], role=str(state.get("user_role", "default"))
+    )
     if cached_response:
         logger.info(f"Response cache hit for: {state['query'][:50]}")
         return {
@@ -115,9 +120,12 @@ def document_search_node(state: AgentState) -> AgentState:
         # Apply space fix before caching so cached responses are also clean
         import re as _space_re
         clean_cached_answer = result.answer
-        clean_cached_answer = _space_re.sub(r'([a-z])([A-Z])', r'\1 \2', clean_cached_answer)
         clean_cached_answer = _space_re.sub(r' {2,}', ' ', clean_cached_answer).strip()
-        if not fallback and clean_cached_answer:
+        # Only cache context-free answers. If the query used conversation history,
+        # the answer is specific to this conversation and must NOT be served to
+        # other users/sessions (privacy + correctness — see BUG 2).
+        has_history = bool(state.get("conversation_history"))
+        if not fallback and clean_cached_answer and not has_history:
             _cache_role = str(state.get("user_role", "default"))
             cache.set_response(state["query"], {
                 "answer": clean_cached_answer,

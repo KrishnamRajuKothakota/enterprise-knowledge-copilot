@@ -100,7 +100,7 @@ async def query_endpoint(
     }
 
     import asyncio
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     final_state = await loop.run_in_executor(None, graph.invoke, initial_state)
 
     latency_ms = int((time.time() - start) * 1000)

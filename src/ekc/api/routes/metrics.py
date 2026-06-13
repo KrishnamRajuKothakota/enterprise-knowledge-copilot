@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from src.ekc.db.session import get_db
 from src.ekc.db.models import (
-    User, QueryLog, Feedback, RagasEvaluation,
+    FeedbackRating, User, QueryLog, Feedback, RagasEvaluation,
     Document, Chunk as ChunkModel
 )
 from src.ekc.api.deps import require_admin
@@ -44,10 +44,10 @@ def get_metrics(
 
     # Feedback stats
     thumbs_up = db.query(Feedback).filter(
-        Feedback.rating == "up"
+        Feedback.rating == FeedbackRating.up
     ).count()
     thumbs_down = db.query(Feedback).filter(
-        Feedback.rating == "down"
+        Feedback.rating == FeedbackRating.down
     ).count()
 
     # Latest RAGAS evaluation

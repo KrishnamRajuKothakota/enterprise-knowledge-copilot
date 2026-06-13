@@ -7,7 +7,7 @@ from fastapi import APIRouter, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from src.ekc.db.session import SessionLocal
-from src.ekc.db.models import QueryLog, Feedback, RagasEvaluation, Chunk as ChunkModel, Document
+from src.ekc.db.models import FeedbackRating, QueryLog, Feedback, RagasEvaluation, Chunk as ChunkModel, Document
 from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
@@ -47,10 +47,10 @@ def collect_metrics(db: Session) -> dict:
 
     # Feedback metrics
     thumbs_up = db.query(Feedback).filter(
-        Feedback.rating == "up"
+        Feedback.rating == FeedbackRating.up
     ).count()
     thumbs_down = db.query(Feedback).filter(
-        Feedback.rating == "down"
+        Feedback.rating == FeedbackRating.down
     ).count()
 
     avg_judge_score = db.query(func.avg(Feedback.llm_judge_score)).filter(
