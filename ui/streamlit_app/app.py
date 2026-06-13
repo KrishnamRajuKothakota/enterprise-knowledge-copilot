@@ -6,7 +6,8 @@ import streamlit as st
 import httpx
 import json
 
-API_BASE = "http://localhost:8000/api/v1"
+import os
+API_BASE = os.environ.get("API_BASE", "http://localhost:8000/api/v1")
 
 st.set_page_config(
     page_title="Enterprise Knowledge Copilot",
@@ -113,6 +114,14 @@ def query_api(query: str) -> dict | None:
     return None
 
 
+def submit_feedback_up(qid: str):
+    submit_feedback(qid, "up")
+    st.session_state[f"fb_done_{qid}"] = "up"
+
+def submit_feedback_down(qid: str):
+    submit_feedback(qid, "down")
+    st.session_state[f"fb_done_{qid}"] = "down"
+
 def submit_feedback(query_id: str, rating: str):
     try:
         httpx.post(f"{API_BASE}/feedback",
@@ -208,6 +217,8 @@ with st.sidebar:
     def set_pending_query(query: str):
         st.session_state["pending_query"] = query
 
+
+
     sample_queries = [
         "What is the SLA for P1 incident resolution?",
         "How do I escalate a VPN issue to L2?",
@@ -285,20 +296,21 @@ with col_chat:
 
                 # Feedback buttons
                 qid = msg.get("query_id")
-                if qid and qid not in st.session_state.feedback_given:
-                    fb_col1, fb_col2, fb_col3 = st.columns([1, 1, 8])
-                    with fb_col1:
-                        if st.button("👍", key=f"up_{qid}"):
-                            submit_feedback(qid, "up")
-                            st.session_state.feedback_given.add(qid)
-                            st.rerun()
-                    with fb_col2:
-                        if st.button("👎", key=f"dn_{qid}"):
-                            submit_feedback(qid, "down")
-                            st.session_state.feedback_given.add(qid)
-                            st.rerun()
-                elif qid in st.session_state.feedback_given:
-                    st.caption("✅ Feedback recorded")
+                if qid:
+                    if st.session_state.get(f"fb_done_{qid}"):
+                        st.caption("✅ Feedback recorded")
+                    else:
+                        fb_col1, fb_col2, fb_col3 = st.columns([1, 1, 8])
+                        with fb_col1:
+                            if st.button("👍", key=f"up_{qid}"):
+                                submit_feedback(qid, "up")
+                                st.session_state[f"fb_done_{qid}"] = "up"
+                                st.rerun()
+                        with fb_col2:
+                            if st.button("👎", key=f"dn_{qid}"):
+                                submit_feedback(qid, "down")
+                                st.session_state[f"fb_done_{qid}"] = "down"
+                                st.rerun()
 
     # Handle pending query from buttons
     pending = st.session_state.get("pending_query", None)
@@ -307,86 +319,38 @@ with col_chat:
     query_to_run = pending or user_input
 
     if query_to_run:
+        # Append user message, call API, append assistant message, then rerun.
+        # All rendering happens through the history loop above — single set of buttons.
         st.session_state.messages.append({"role": "user", "content": query_to_run})
-
-        with st.chat_message("user"):
-            st.write(query_to_run)
-
-        with st.chat_message("assistant"):
-            with st.spinner("🔍 Running triple-fusion retrieval + LLM generation (~10-15s first query, instant if cached)..."):
-                result = query_api(query_to_run)
-
-            if result is None or "error" in result:
-                error_msg = result.get("error", "unknown") if result else "API error"
-                if error_msg == "timeout":
-                    st.error("⏱️ Query timed out. The LLM is warming up — try again in 30 seconds.")
-                else:
-                    st.error(f"Error: {error_msg}")
-            else:
-                # Update session_id
-                st.session_state.session_id = result.get("session_id")
-
-                answer = result.get("answer", "No answer returned.")
-                st.write(answer)
-
-                # Sources expander
-                sources = result.get("sources", [])
-                if sources:
-                    with st.expander(f"📚 {len(sources)} source(s)"):
-                        for src in sources:
-                            st.markdown(f"""<div class='source-card'>
-                            📄 <b>{src['doc_title'][:50]}</b><br>
-                            📌 {src['section_title'][:60]}<br>
-                            🏷️ namespace: {src['namespace']}
-                            </div>""", unsafe_allow_html=True)
-
-                # Confidence + cache indicator
-                conf = result.get("confidence_score", 0)
-                conf_class = ("confidence-high" if conf > 0.7
-                              else "confidence-med" if conf > 0.4
-                              else "confidence-low")
-                st.markdown(
-                    f"<span class='{conf_class}'>Confidence: {conf:.0%}</span> "
-                    f"{'⚡ cached' if result.get('cache_hit') else ''}"
-                    f"{'🔺 escalated' if result.get('escalated') else ('⚠️ fallback' if result.get('fallback') else '')}",
-                    unsafe_allow_html=True,
-                )
-
-                # Follow-up suggestions
-                follow_ups = result.get("follow_up_suggestions", [])
-                if follow_ups:
-                    st.caption("💡 You might also ask:")
-                    for fu in follow_ups:
-                        st.button(fu, key=f"fu_new_{hash(fu)}", on_click=set_pending_query, args=(fu,))
-
-                # Save to history
-                st.session_state.last_query_id = result.get("query_id")
+        with st.spinner("🔍 Running triple-fusion retrieval + LLM generation (~10-15s first query, instant if cached)..."):
+            result = query_api(query_to_run)
+        if result is None or "error" in result:
+            error_msg = result.get("error", "unknown") if result else "API error"
+            if error_msg == "timeout":
                 st.session_state.messages.append({
                     "role": "assistant",
-                    "content": answer,
-                    "sources": sources,
-                    "confidence_score": conf,
-                    "cache_hit": result.get("cache_hit", False),
-                    "fallback": result.get("fallback", False),
-                    "follow_ups": follow_ups,
-                    "query_id": result.get("query_id"),
+                    "content": "⏱️ Query timed out. The LLM is warming up — try again in 30 seconds.",
                 })
-
-                # Feedback buttons for latest message
-                qid = result.get("query_id")
-                if qid:
-                    st.caption("Was this helpful?")
-                    fb1, fb2, fb3 = st.columns([1, 1, 8])
-                    with fb1:
-                        if st.button("👍", key=f"up_new_{qid}"):
-                            submit_feedback(qid, "up")
-                            st.session_state.feedback_given.add(qid)
-                            st.rerun()
-                    with fb2:
-                        if st.button("👎", key=f"dn_new_{qid}"):
-                            submit_feedback(qid, "down")
-                            st.session_state.feedback_given.add(qid)
-                            st.rerun()
+            else:
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": f"Error: {error_msg}",
+                })
+        else:
+            st.session_state.session_id = result.get("session_id")
+            st.session_state.last_query_id = result.get("query_id")
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": result.get("answer", "No answer returned."),
+                "sources": result.get("sources", []),
+                "confidence_score": result.get("confidence_score", 0),
+                "cache_hit": result.get("cache_hit", False),
+                "fallback": result.get("fallback", False),
+                "escalated": result.get("escalated", False),
+                "follow_ups": result.get("follow_up_suggestions", []),
+                "query_id": result.get("query_id"),
+            })
+        st.rerun()
 
 with col_info:
     st.subheader("🏗️ Architecture")

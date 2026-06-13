@@ -4,7 +4,8 @@ import httpx
 import pandas as pd
 from datetime import datetime
 
-API_BASE = "http://localhost:8000/api/v1"
+import os
+API_BASE = os.environ.get("API_BASE", "http://localhost:8000/api/v1")
 
 st.set_page_config(page_title="EKC Dashboard", page_icon="📊", layout="wide")
 

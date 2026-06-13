@@ -71,6 +71,7 @@ services:
     ports:
       - "8501:8501"
     environment:
+      - API_BASE=http://api:8000/api/v1
       - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
       - REDIS_URL=redis://redis:6379/0
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
@@ -91,6 +92,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
       - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-me-in-production}
+      - APP_ENV=${APP_ENV:-development}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
       - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b}
     volumes:
@@ -110,6 +113,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://ekc_user:ekc_user@postgres:5432/ekc_db
       - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-me-in-production}
+      - APP_ENV=${APP_ENV:-development}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://172.16.29.1:11434}
       - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3:8b}
     volumes:

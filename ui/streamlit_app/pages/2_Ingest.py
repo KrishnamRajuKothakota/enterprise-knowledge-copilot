@@ -3,7 +3,7 @@ import streamlit as st
 import httpx
 import os
 
-API_BASE = "http://localhost:8000/api/v1"
+API_BASE = os.environ.get("API_BASE", "http://localhost:8000/api/v1")
 
 st.set_page_config(page_title="EKC Ingest", page_icon="📥", layout="wide")
 
