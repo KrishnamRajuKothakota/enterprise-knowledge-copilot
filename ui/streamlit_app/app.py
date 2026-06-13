@@ -23,7 +23,14 @@ st.markdown("""
         padding: 1.5rem 2rem;
         border-radius: 10px;
         margin-bottom: 1.5rem;
-        color: white;
+        color: white !important;
+    }
+    .main-header h2 {
+        color: white !important;
+        font-weight: 700;
+    }
+    .main-header p {
+        color: #CBD5E0 !important;
     }
     .source-card {
         background: #F8F9FA;
@@ -198,6 +205,9 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("**💡 Sample Queries**")
+    def set_pending_query(query: str):
+        st.session_state["pending_query"] = query
+
     sample_queries = [
         "What is the SLA for P1 incident resolution?",
         "How do I escalate a VPN issue to L2?",
@@ -207,9 +217,7 @@ with st.sidebar:
         "What is the leaver account disable procedure?",
     ]
     for sq in sample_queries:
-        if st.button(sq, key=f"sample_{sq[:20]}", use_container_width=True):
-            st.session_state["pending_query"] = sq
-            st.rerun()
+        st.button(sq, key=f"sample_{sq[:20]}", use_container_width=True, on_click=set_pending_query, args=(sq,))
 
     st.markdown("---")
     if st.button("🚪 Sign Out"):
@@ -220,13 +228,23 @@ with st.sidebar:
         st.rerun()
 
 # ── Chat area ─────────────────────────────────────────────────────────────────
+# chat_input must be outside columns to pin to page bottom
+user_input = st.chat_input("Ask anything about your IT knowledge base...")
+
 col_chat, col_info = st.columns([3, 1])
 
 with col_chat:
     st.subheader("💬 Chat")
 
-    # Declare chat_input first — Streamlit pins it to bottom of column
-    user_input = st.chat_input("Ask anything about your IT knowledge base...")
+    # Show welcome when no messages
+    if not st.session_state.messages:
+        st.markdown("""
+        <div style='text-align:center; padding: 60px 20px;'>
+            <div style='font-size: 48px;'>🧠</div>
+            <h3 style='color: inherit;'>Ask anything about your IT knowledge base</h3>
+            <p style='color: inherit; opacity: 0.6;'>Try a sample query from the sidebar, or type your question below.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
     # Display message history
     for msg in st.session_state.messages:
@@ -263,9 +281,7 @@ with col_chat:
                 if msg.get("follow_ups"):
                     st.caption("💡 Follow-up suggestions:")
                     for fu in msg["follow_ups"]:
-                        if st.button(fu, key=f"fu_{fu[:30]}_{msg.get('query_id','')}"):
-                            st.session_state["pending_query"] = fu
-                            st.rerun()
+                        st.button(fu, key=f"fu_{hash(fu)}_{msg.get('query_id','')}", on_click=set_pending_query, args=(fu,))
 
                 # Feedback buttons
                 qid = msg.get("query_id")
@@ -284,10 +300,10 @@ with col_chat:
                 elif qid in st.session_state.feedback_given:
                     st.caption("✅ Feedback recorded")
 
-    # Handle pending query from sidebar buttons
-    pending = st.session_state.pop("pending_query", None)
-
-    # (chat_input declared above for bottom pinning)
+    # Handle pending query from buttons
+    pending = st.session_state.get("pending_query", None)
+    if pending:
+        del st.session_state["pending_query"]
     query_to_run = pending or user_input
 
     if query_to_run:
@@ -341,9 +357,7 @@ with col_chat:
                 if follow_ups:
                     st.caption("💡 You might also ask:")
                     for fu in follow_ups:
-                        if st.button(fu, key=f"fu_new_{fu[:30]}"):
-                            st.session_state["pending_query"] = fu
-                            st.rerun()
+                        st.button(fu, key=f"fu_new_{hash(fu)}", on_click=set_pending_query, args=(fu,))
 
                 # Save to history
                 st.session_state.last_query_id = result.get("query_id")
