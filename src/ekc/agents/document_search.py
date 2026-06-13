@@ -64,7 +64,8 @@ def document_search_node(state: AgentState) -> AgentState:
  
         # Build prompt and generate
         system_prompt, user_message = build_prompt(
-            state["query"], chunks, state["user_role"]
+            state["query"], chunks, state["user_role"],
+            conversation_history=state.get("conversation_history", [])
         )
  
         raw_response = ""

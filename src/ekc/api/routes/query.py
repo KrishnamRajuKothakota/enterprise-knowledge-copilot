@@ -76,11 +76,15 @@ async def query_endpoint(
 
     # Run agent graph
     graph = get_graph()
+    # Load conversation history for context-aware responses
+    conversation_history = session.context_window or []
+
     initial_state = {
         "query": req.query,
         "session_id": session_id,
         "user_id": current_user.user_id,
         "user_role": _resolve_role(req.role, current_user.role),
+        "conversation_history": conversation_history,
         "intent": "",
         "chunks": [],
         "raw_response": "",
