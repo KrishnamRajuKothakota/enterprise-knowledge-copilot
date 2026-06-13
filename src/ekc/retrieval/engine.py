@@ -148,6 +148,19 @@ class HybridRetrievalEngine:
             query, candidate_ids, self.db, top_k=top_k
         )
 
+        # 6b. Cross-encoder score floor + top-3 cap.
+        # Reranker cleanly separates relevant chunks (positive, often >1) from
+        # junk (negative). Dropping below-floor chunks raises context precision
+        # and faithfulness. Always keep >=2 to avoid starving the answer.
+        SCORE_FLOOR = 0.0
+        MAX_CONTEXT_CHUNKS = 3
+        MIN_CONTEXT_CHUNKS = 2
+        above_floor = [(cid, s) for cid, s in reranked if s >= SCORE_FLOOR]
+        if len(above_floor) >= MIN_CONTEXT_CHUNKS:
+            reranked = above_floor[:MAX_CONTEXT_CHUNKS]
+        else:
+            reranked = reranked[:MIN_CONTEXT_CHUNKS]
+
         # 7. RBAC filter
         reranked_ids = [cid for cid, _ in reranked]
         allowed_ids = self.role_injector.filter_by_role(

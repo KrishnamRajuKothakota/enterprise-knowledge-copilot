@@ -79,7 +79,7 @@ def document_search_node(state: AgentState) -> AgentState:
         for attempt in range(MAX_RETRIES + 1):
             try:
                 raw_response = llm.generate(
-                    system_prompt, user_message, max_tokens=500
+                    system_prompt, user_message, max_tokens=350
                 )
                 is_grounded, conf = guard.check(raw_response, chunks)
                 if is_grounded or attempt == MAX_RETRIES:
