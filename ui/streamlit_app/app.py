@@ -225,6 +225,9 @@ col_chat, col_info = st.columns([3, 1])
 with col_chat:
     st.subheader("💬 Chat")
 
+    # Declare chat_input first — Streamlit pins it to bottom of column
+    user_input = st.chat_input("Ask anything about your IT knowledge base...")
+
     # Display message history
     for msg in st.session_state.messages:
         if msg["role"] == "user":
@@ -284,8 +287,7 @@ with col_chat:
     # Handle pending query from sidebar buttons
     pending = st.session_state.pop("pending_query", None)
 
-    # Chat input
-    user_input = st.chat_input("Ask anything about your IT knowledge base...")
+    # (chat_input declared above for bottom pinning)
     query_to_run = pending or user_input
 
     if query_to_run:
