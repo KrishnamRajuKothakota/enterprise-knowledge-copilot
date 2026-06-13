@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str = "ekc_db"
     postgres_user: str = "ekc_user"
-    postgres_password: str
+    postgres_password: str = ""
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

@@ -65,8 +65,8 @@ if st.button("🚀 Ingest Document", type="primary"):
                     st.success(
                         f"✅ Ingestion complete: "
                         f"{result.get('chunks_created', 'queued')} chunks, "
-                        f"{result['embeddings_created']} embeddings, "
-                        f"{result['pii_redactions']} PII redactions"
+                        f"{result.get('embeddings_created', 'queued')} embeddings, "
+                        f"{result.get('pii_redactions', 'queued')} PII redactions"
                     )
                 else:
                     st.error(f"Error {r.status_code}: {r.text}")
