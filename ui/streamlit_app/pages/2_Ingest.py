@@ -64,7 +64,7 @@ if st.button("🚀 Ingest Document", type="primary"):
                     result = r.json()
                     st.success(
                         f"✅ Ingestion complete: "
-                        f"{result['chunks_created']} chunks, "
+                        f"{result.get('chunks_created', 'queued')} chunks, "
                         f"{result['embeddings_created']} embeddings, "
                         f"{result['pii_redactions']} PII redactions"
                     )

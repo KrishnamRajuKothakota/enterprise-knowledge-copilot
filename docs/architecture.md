@@ -64,5 +64,5 @@ No queries or documents leave the enterprise network boundary.
 - JWT + RBAC on all endpoints
 - Document-level namespace isolation
 - Pre-ingestion PII redaction — originals never stored
-- TLS 1.3 via Nginx
+- TLS 1.3 via Nginx (production deployment)
 - DPDP Act 2023 compliant

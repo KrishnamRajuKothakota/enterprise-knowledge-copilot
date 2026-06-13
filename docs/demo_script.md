@@ -97,7 +97,7 @@ answer, and says so. 91% refusal rate on 22 adversarial out-of-scope queries."
 
 - [ ] bash scripts/start.sh (starts everything)
 - [ ] python scripts/warm_cache.py (all queries <200ms)
-- [ ] Confirm health: curl -sk https://localhost/health
+- [ ] Confirm health: curl -s http://localhost:8000/health
 - [ ] Open Streamlit at http://localhost:8501
 - [ ] Login as admin@ekc.local
 - [ ] Open Dashboard tab — verify RAGAS scores and weight signals show

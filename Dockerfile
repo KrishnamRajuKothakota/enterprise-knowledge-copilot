@@ -20,7 +20,7 @@ RUN python -m spacy download en_core_web_lg
 COPY src/ src/
 COPY ui/ ui/
 COPY scripts/ scripts/
-COPY data/indexes/ data/indexes/
+# data/indexes are gitignored — rebuilt via ingest_all.py + build_kg.py
 COPY data/eval/ data/eval/
 # .env is NOT baked into image — mount via docker-compose env_file or environment
 

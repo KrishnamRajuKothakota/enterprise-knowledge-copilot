@@ -71,7 +71,7 @@ Full methodology in [docs/evaluation_notes.md](docs/evaluation_notes.md).
 ┌─────────────────────────────────────────────────────────────┐
 │                    Enterprise Network Boundary               │
 │                                                             │
-│  User → Nginx (TLS) → FastAPI × 2 → LangGraph Agents       │
+│  User → FastAPI (TLS via Nginx in production) → FastAPI × 2 → LangGraph Agents       │
 │                              ↓                              │
 │         Triple-Fusion Retrieval Engine                      │
 │         ├── FAISS IndexFlatIP (384-dim, 8,372 chunks)       │
@@ -147,6 +147,10 @@ Full methodology in [docs/evaluation_notes.md](docs/evaluation_notes.md).
 ---
 
 ## Quick Start
+
+> **Note on indexes:** FAISS and BM25 indexes are not committed to the repo (they are gitignored due to size).
+> After cloning, run the ingestion pipeline (~20-30 min) to rebuild them:
+> `python scripts/ingest_all.py && python scripts/build_kg.py && python scripts/link_sop_entities.py`
 
 ### Prerequisites
 - Ubuntu 22.04+ with Docker + Docker Compose
